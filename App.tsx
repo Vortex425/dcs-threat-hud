@@ -1,7 +1,7 @@
-// 🚀 App.tsx - Unser Main Terminal (Mit OSB Hardware Buttons)
+// 🚀 App.tsx - Unser Main Terminal (Mit OSB Hardware Buttons & Suche)
 import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import RwrGrid from './RwrGrid';
 import ThreatModal from './ThreatModal';
 import { fa18cThreats, Threat } from './threatData';
@@ -12,6 +12,10 @@ export default function App() {
   const [selectedThreat, setSelectedThreat] = useState<Threat | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('ALL');
+  
+  // 🔥 Neue States für die Suchfunktion
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   const handleThreatSelect = (threat: Threat) => {
     setSelectedThreat(threat);
@@ -23,11 +27,22 @@ export default function App() {
     setTimeout(() => setSelectedThreat(null), 300); 
   };
 
-  const filteredThreats = activeFilter === 'ALL' 
-    ? fa18cThreats 
-    : fa18cThreats.filter(t => t.category === activeFilter);
+  // 🔥 Die Filter-Logik kombiniert jetzt Kategorie-Button UND Sucheintrag
+  const filteredThreats = fa18cThreats.filter(t => {
+    // 1. Passt die Kategorie?
+    const matchesCategory = activeFilter === 'ALL' || t.category === activeFilter;
+    
+    // 2. Passt der Suchbegriff? (Sucht in RWR, Name und HARM-Code)
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = query === '' || 
+                          t.rwrSymbol.toLowerCase().includes(query) ||
+                          t.name.toLowerCase().includes(query) ||
+                          (t.harmCode && t.harmCode.toLowerCase().includes(query));
+                          
+    return matchesCategory && matchesSearch;
+  });
 
-  const categories: FilterCategory[] = ['ALL', 'SAM', 'AAA', 'SHIP', 'AIR'];
+  const categories: FilterCategory[] = ['ALL', 'SAM', 'AIR', 'SHIP', 'AAA'];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -38,21 +53,17 @@ export default function App() {
         <Text style={styles.subText}>SYSTEM ONLINE ...</Text>
       </View>
 
-      {/* 🎯 Taktische OSB-Leiste (Option Select Buttons) */}
+      {/* 🎯 Taktische OSB-Leiste */}
       <View style={styles.mfdBezel}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScroll}>
           {categories.map(cat => (
             <View key={cat} style={styles.osbGroup}>
-              {/* Der physische "Hardware" Button */}
               <TouchableOpacity 
                 style={[styles.osbHardwareBtn, activeFilter === cat && styles.osbHardwareBtnActive]}
                 onPress={() => setActiveFilter(cat)}
                 activeOpacity={0.7}
               />
-              {/* Die kleine Verbindungslinie vom Button zum Display-Text */}
               <View style={[styles.osbConnector, activeFilter === cat && styles.osbConnectorActive]} />
-              
-              {/* Der digitale Text "auf" dem Bildschirm */}
               <Text style={[styles.osbScreenText, activeFilter === cat && styles.osbScreenTextActive]}>
                 {cat}
               </Text>
@@ -62,6 +73,39 @@ export default function App() {
       </View>
 
       <View style={styles.radarScreen}>
+        
+        {/* 🔥 Taktisches Such-Overlay oben rechts */}
+        <View style={styles.sideSearchContainer}>
+          {isSearchActive && (
+            <TextInput
+              style={styles.searchInput}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholder="TARGET..."
+              placeholderTextColor="#005500"
+              autoCapitalize="characters"
+              autoFocus={true} 
+            />
+          )}
+          <TouchableOpacity 
+            style={[styles.rightEdgeBtn, isSearchActive && styles.rightEdgeBtnActive]} 
+            onPress={() => {
+              setIsSearchActive(!isSearchActive);
+              if (isSearchActive) setSearchQuery(''); 
+            }}
+          >
+            {/* Wir splitten den Text auf und rendern jeden Buchstaben untereinander */}
+            {(isSearchActive ? ['⊓', 'X', '⊔'] : ['⊓', 'S', 'R', 'C', 'H', '⊔']).map((char, index) => (
+              <Text 
+                key={index} 
+                style={[styles.verticalChar, isSearchActive && styles.verticalCharActive]}
+              >
+                {char}
+              </Text>
+            ))}
+          </TouchableOpacity>
+        </View>
+
         <RwrGrid threats={filteredThreats} onThreatSelect={handleThreatSelect} />
       </View>
 
@@ -89,6 +133,7 @@ const styles = StyleSheet.create({
   radarScreen: {
     flex: 1,
     justifyContent: 'center',
+    position: 'relative', // Wichtig, damit das Such-Overlay absolut darin platziert werden kann
   },
   glitchText: {
     color: '#39FF14',
@@ -108,11 +153,12 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   
-  /* NEUE OSB STYLES (Hardware-Look) */
+  /* --- OSB STYLES --- */
   mfdBezel: {
-    backgroundColor: '#111', // Dunkelgrau für den "Rahmen" um das Display
+    backgroundColor: '#111', 
     borderBottomWidth: 2,
     borderBottomColor: '#222',
+    zIndex: 1, // Stellt sicher, dass die Suche nicht drunter rutscht
   },
   filterScroll: {
     paddingHorizontal: 20,
@@ -127,15 +173,15 @@ const styles = StyleSheet.create({
   osbHardwareBtn: {
     width: 45,
     height: 25,
-    backgroundColor: '#333', // Graues Plastik/Metall
+    backgroundColor: '#333', 
     borderWidth: 2,
     borderColor: '#111',
-    borderBottomWidth: 4, // Erzeugt einen 3D-Tasten-Effekt
+    borderBottomWidth: 4, 
     borderRadius: 4,
   },
   osbHardwareBtnActive: {
-    borderBottomWidth: 1, // "Reingedrückter" Effekt
-    transform: [{ translateY: 3 }], // Bewegt den Button physisch nach unten
+    borderBottomWidth: 1, 
+    transform: [{ translateY: 3 }], 
     backgroundColor: '#444',
   },
   osbConnector: {
@@ -163,5 +209,59 @@ const styles = StyleSheet.create({
     textShadowColor: '#39FF14',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
+  },
+
+  /* --- NEU: SEARCH OVERLAY STYLES --- */
+  /* --- NEU: VERTICAL SIDE-BUTTON STYLES --- */
+  sideSearchContainer: {
+    position: 'absolute',
+    right: 0,       // Klebt ganz am rechten Rand
+    top: 30,        // Zieht den Button etwas nach unten, weg von den oberen Filtern
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 50,     // Bleibt immer über dem RWR Grid
+  },
+  searchInput: {
+    backgroundColor: 'rgba(0, 17, 0, 0.9)',
+    color: '#39FF14',
+    fontFamily: 'monospace',
+    fontSize: 16,
+    width: 120,
+    height: 40,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#39FF14',
+    borderRightWidth: 0, // Verbindet sich nahtlos mit dem Button
+    textShadowColor: '#39FF14',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5,
+  },
+  rightEdgeBtn: {
+    backgroundColor: '#000000',
+    borderWidth: 1,
+    borderColor: '#005500',
+    borderRightWidth: 0, // An der rechten Kante offen
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+  },
+  rightEdgeBtnActive: {
+    backgroundColor: 'rgba(57, 255, 20, 0.1)',
+    borderColor: '#39FF14',
+  },
+  verticalChar: {
+    color: '#005500',
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 'bold',
+    lineHeight: 16, // Hält die Buchstaben dicht beisammen
+  },
+  verticalCharActive: {
+    color: '#39FF14',
+    textShadowColor: '#39FF14',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   }
 });
