@@ -5,11 +5,13 @@ export interface Threat {
   id: string;
   rwrSymbol: string;
   name: string;
-  category: 'SAM' | 'AAA' | 'SHIP' | 'AIR';
+  category: 'SAM' | 'AAA' | 'SHIP' | 'AIR' | 'SR';
   maxRangeNm: string; // Als String, wegen Werten wie "48/++"
   maxAltFt: string;   // Als String, wegen Werten wie "++" oder "20"
   countermeasure: 'Chaff' | 'Flares' | 'Evade';
   harmCode: string;
+  image?: any;
+  linkedSystems?: string[]
 }
 
 // Unsere F/A-18C Datenbank, direkt aus deinem Cheat-Sheet extrahiert.
@@ -22,7 +24,9 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "48",
     maxAltFt: "++",      // > 50.000ft
     countermeasure: "Chaff",
-    harmCode: "110"
+    harmCode: "110",
+    image: require('./assets/threats/SA-10Launcher.png'),
+    linkedSystems: ["BB", "CS", "TS"]
   },
   {
     id: "sa-15",
@@ -32,7 +36,9 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "09",
     maxAltFt: "20",      // 20.000ft
     countermeasure: "Chaff",
-    harmCode: "119"
+    harmCode: "119",
+    image: require('./assets/threats/SA-15.png'),
+    linkedSystems: ["DE"]
   },
   {
     id: "patriot",
@@ -42,7 +48,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "60",
     maxAltFt: "++",
     countermeasure: "Chaff",
-    harmCode: "202"
+    harmCode: "202",
+    image: require('./assets/threats/Patriot.png')
   },
   {
     id: "sa-2",
@@ -52,7 +59,9 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "27",
     maxAltFt: "++",
     countermeasure: "Chaff",
-    harmCode: "126"
+    harmCode: "126",
+    image: require('./assets/threats/SA-2Launcher.png'),
+    linkedSystems: ["S"]
   },
   {
     id: "sa-3",
@@ -62,7 +71,9 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "13",
     maxAltFt: "++",
     countermeasure: "Chaff",
-    harmCode: "123"
+    harmCode: "123",
+    image: require('./assets/threats/SA-3Launcher.png'),
+    linkedSystems:["S"]
   },
   {
     id: "sa-5",
@@ -72,7 +83,9 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "160",
     maxAltFt: "++",
     countermeasure: "Chaff",
-    harmCode: "129"
+    harmCode: "129",
+    image: require('./assets/threats/SA-5Launcher.png'),
+    linkedSystems: ["S","TS"]
   },
   {
     id: "sa-6",
@@ -82,7 +95,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "18",
     maxAltFt: "27",
     countermeasure: "Chaff",
-    harmCode: "108"
+    harmCode: "108",
+    image: require('./assets/threats/SA-6Launcher.png')
   },
   {
     id: "hq-7b",
@@ -92,7 +106,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "10",
     maxAltFt: "18",
     countermeasure: "Evade",
-    harmCode: "127"
+    harmCode: "127",
+    image: require('./assets/threats/hq-7q.png')
   },
   {
     id: "sa-8",
@@ -102,7 +117,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "07",
     maxAltFt: "17",
     countermeasure: "Chaff",
-    harmCode: "117"
+    harmCode: "117",
+    image: require('./assets/threats/SA-8.png')
   },
   {
     id: "sa-11",
@@ -112,7 +128,9 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "29",
     maxAltFt: "++",
     countermeasure: "Chaff",
-    harmCode: "115"
+    harmCode: "115",
+    image: require('./assets/threats/SA-11Launcher.png'),
+    linkedSystems: ["SD"]
   },
   {
     id: "sa-13",
@@ -122,7 +140,9 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "03",
     maxAltFt: "12",
     countermeasure: "Flares",
-    harmCode: "118"
+    harmCode: "118",
+    image: require('./assets/threats/SA-13.png'),
+    linkedSystems:  ["DE"]
   },
   {
     id: "sa-19",
@@ -132,7 +152,9 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "05",
     maxAltFt: "12",
     countermeasure: "Evade",
-    harmCode: "120"
+    harmCode: "120",
+    image: require('./assets/threats/SA-19.png'),
+    linkedSystems: ["DE"]
   },
   {
     id: "sa-22",
@@ -142,7 +164,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "11",
     maxAltFt: "33",
     countermeasure: "Chaff",
-    harmCode: "134"
+    harmCode: "134",
+    image: require('./assets/threats/SA-22.png')
   },
   {
     id: "hawk",
@@ -152,7 +175,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "14",
     maxAltFt: "++",
     countermeasure: "Chaff",
-    harmCode: "204"
+    harmCode: "204",
+    image: require('./assets/threats/HAWK.png')
   },
   {
     id: "iris-t",
@@ -162,7 +186,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "22",
     maxAltFt: "++",
     countermeasure: "Flares",
-    harmCode: "135"
+    harmCode: "135",
+    image: require('./assets/threats/IRIS-T.png')
   },
   {
     id: "nasams-b",
@@ -196,7 +221,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "10",
     maxAltFt: "39",
     countermeasure: "Chaff",
-    harmCode: "415"
+    harmCode: "415",
+    image: require('./assets/threats/Tor-M2Ship.png')
   },
   {
     id: "ship-type-052C",
@@ -206,7 +232,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "90",
     maxAltFt: "++",
     countermeasure: "Chaff",
-    harmCode: "410 | 313"
+    harmCode: "410 | 313",
+    image: require('./assets/threats/PyotrVelikiy.png')
   },
   {
     id: "ship-grisha",
@@ -216,7 +243,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "08",
     maxAltFt: "15",
     countermeasure: "Chaff",
-    harmCode: "306"
+    harmCode: "306",
+    image: require('./assets/threats/Grisha.png')
   },
   {
     id: "ship-molniya",
@@ -226,7 +254,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "03",
     maxAltFt: "9",
     countermeasure: "Evade",
-    harmCode: "312"
+    harmCode: "312",
+    image: require('./assets/threats/Molniya.png')
   },
   {
     id: "ship-neustrashimy_rezky",
@@ -236,7 +265,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "08",
     maxAltFt: "20",
     countermeasure: "Chaff",
-    harmCode: "319 | 309"
+    harmCode: "319 | 309",
+    image: require('./assets/threats/Neustrashimy.png')
   },
   {
     id: "ship-kuznetsov",
@@ -246,7 +276,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "08",
     maxAltFt: "20",
     countermeasure: "Chaff",
-    harmCode: "320"
+    harmCode: "320",
+    image: require('./assets/threats/kuznetsov.png')
   },
   {
     id: "ship-moskva",
@@ -256,7 +287,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "48",
     maxAltFt: "++",
     countermeasure: "Chaff",
-    harmCode: "303"
+    harmCode: "303",
+    image: require('./assets/threats/Moskva.png')
   },
   {
     id: "ship-ropucha",
@@ -266,41 +298,23 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "06",
     maxAltFt: "9",
     countermeasure: "Evade",
-    harmCode: "321"
+    harmCode: "321",
+    image: require('./assets/threats/LSRopucha.png')
   },
 
   // ==========================================
   // 💥 AAA (Flak & SPAAA)
   // ==========================================
   {
-    id: "aaa-gepard",
-    rwrSymbol: "A",
-    name: "Gepard SPAAA",
-    category: "AAA",
-    maxRangeNm: "03",
-    maxAltFt: "10",
-    countermeasure: "Evade",
-    harmCode: "207"
-  },
-  {
-    id: "aaa-shilka",
-    rwrSymbol: "A",
-    name: "ZSU-23-4 Shilka",
-    category: "AAA",
-    maxRangeNm: "02",
-    maxAltFt: "07",
-    countermeasure: "Evade",
-    harmCode: "121"
-  },
-  {
-    id: "aaa-vulcan",
-    rwrSymbol: "A",
-    name: "Vulcan SPAAA",
-    category: "AAA",
-    maxRangeNm: "02",
-    maxAltFt: "06",
-    countermeasure: "Evade",
-    harmCode: "208"
+    "id": "aaa-composite-threat",
+    "rwrSymbol": "A",
+    "name": "Composite AAA Threat (Gepard/Shilka/Vulcan)",
+    "category": "AAA",
+    "maxRangeNm": "03",
+    "maxAltFt": "10",
+    "countermeasure": "Evade",
+    "harmCode": "207/121/208",
+    image: require('./assets/threats/Shilka.png')
   },
 
   // ==========================================
@@ -314,7 +328,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "03",
     maxAltFt: "N/A",
     countermeasure: "Evade",
-    harmCode: "N/A"
+    harmCode: "N/A",
+    image: require('./assets/threats/MiG-19.png')
   },
   {
     id: "air-mig21bis",
@@ -324,7 +339,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "09",
     maxAltFt: "N/A",
     countermeasure: "Evade",
-    harmCode: "N/A"
+    harmCode: "N/A",
+    image: require('./assets/threats/MiG-21.png')
   },
   {
     id: "air-mig23mld",
@@ -334,7 +350,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "14",
     maxAltFt: "N/A",
     countermeasure: "Evade",
-    harmCode: "N/A"
+    harmCode: "N/A",
+    image: require('./assets/threats/MiG-23MLD.png')
   },
   {
     id: "air-mig25pd",
@@ -344,47 +361,19 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "25",
     maxAltFt: "N/A",
     countermeasure: "Evade",
-    harmCode: "N/A"
+    harmCode: "N/A",
+    image: require('./assets/threats/MiG-25.png')
   },
   {
-    id: "air-mig29ag",
-    rwrSymbol: "29",
-    name: "MiG-29A/G Fulcrum",
-    category: "AIR",
-    maxRangeNm: "38",
-    maxAltFt: "N/A",
-    countermeasure: "Evade",
-    harmCode: "N/A"
-  },
-  {
-    id: "air-mig29s",
-    rwrSymbol: "29",
-    name: "MiG-29S Fulcrum",
-    category: "AIR",
-    maxRangeNm: "33",
-    maxAltFt: "N/A",
-    countermeasure: "Evade",
-    harmCode: "N/A"
-  },
-  {
-    id: "air-su27",
-    rwrSymbol: "29",
-    name: "Su-27/33 Flanker",
-    category: "AIR",
-    maxRangeNm: "32",
-    maxAltFt: "N/A",
-    countermeasure: "Evade",
-    harmCode: "N/A"
-  },
-  {
-    id: "air-j11a",
-    rwrSymbol: "29",
-    name: "J-11A Flanker B+",
-    category: "AIR",
-    maxRangeNm: "32",
-    maxAltFt: "N/A",
-    countermeasure: "Evade",
-    harmCode: "N/A"
+    "id": "air-mig29-su27-j11",
+    "rwrSymbol": "29",
+    "name": "MiG-29/Su-27/Su-33/J-11A",
+    "category": "AIR",
+    "maxRangeNm": "38",
+    "maxAltFt": "N/A",
+    "countermeasure": "Evade",
+    "harmCode": "N/A",
+    image: require('./assets/threats/MiG-29.png')
   },
   {
     id: "air-su30",
@@ -394,7 +383,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "37",
     maxAltFt: "N/A",
     countermeasure: "Evade",
-    harmCode: "N/A"
+    harmCode: "N/A",
+    image: require('./assets/threats/Su-30.png')
   },
   {
     id: "air-mig31",
@@ -404,7 +394,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "37",
     maxAltFt: "N/A",
     countermeasure: "Evade",
-    harmCode: "N/A"
+    harmCode: "N/A",
+    image: require('./assets/threats/MiG-31.png')
   },
   {
     id: "air-su34",
@@ -414,7 +405,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "35",
     maxAltFt: "N/A",
     countermeasure: "Evade",
-    harmCode: "N/A"
+    harmCode: "N/A",
+    image: require('./assets/threats/Su-34.png')
   },
   {
     id: "air-jf17",
@@ -424,7 +416,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "46",
     maxAltFt: "N/A",
     countermeasure: "Evade",
-    harmCode: "N/A"
+    harmCode: "N/A",
+    image: require('./assets/threats/JF-17.png')
   },
   {
     id: "air-a50",
@@ -434,6 +427,83 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "N/A",
     maxAltFt: "N/A",
     countermeasure: "Evade",
-    harmCode: "N/A"
+    harmCode: "N/A",
+    image: require('./assets/threats/A-50.png')
+  },
+
+  // ==========================================
+  // Search and Track Radars
+  // ==========================================
+  {
+    id: "sr-flat-face",
+    rwrSymbol: "S",
+    name: "Flat Face B SR",
+    category: "SR",
+    maxRangeNm: "N/A",
+    maxAltFt: "N/A",
+    countermeasure: "Evade",
+    harmCode: "122",
+    image: require('./assets/threats/P-15-FlatFace.png'),
+    linkedSystems: ["2", "3", "5"]
+  },
+  {
+    id: "sr-big-bird",
+    rwrSymbol: "BB",
+    name: "Big Bird long range SR",
+    category: "SR",
+    maxRangeNm: "N/A",
+    maxAltFt: "N/A",
+    countermeasure: "Evade",
+    harmCode: "104",
+    image: require('./assets/threats/BigBird.png'),
+    linkedSystems: ["10"]
+  },
+  {
+    id: "sr-clam-shell",
+    rwrSymbol: "CS",
+    name: "Clam Shell low altitude SR",
+    category: "SR",
+    maxRangeNm: "N/A",
+    maxAltFt: "N/A",
+    countermeasure: "Evade",
+    harmCode: "103",
+    image: require('./assets/threats/ClamShell.png'),
+    linkedSystems: ["10"]
+  },
+  {
+    id: "sr-dog-ear",
+    rwrSymbol: "DE",
+    name: "Dog Ear Sborka SR",
+    category: "SR",
+    maxRangeNm: "N/A",
+    maxAltFt: "N/A",
+    countermeasure: "Evade",
+    harmCode: "131",
+    image: require('./assets/threats/DogEar.png'),
+    linkedSystems: ["13", "15", "19"]
+  },
+  {
+    id: "sr-snow-drift",
+    rwrSymbol: "SD",
+    name: "Snow Drift SR",
+    category: "SR",
+    maxRangeNm: "N/A",
+    maxAltFt: "N/A",
+    countermeasure: "Evade",
+    harmCode: "107",
+    image: require('./assets/threats/SnowDrift.png'),
+    linkedSystems: ["11"]
+  },
+  {
+    id: "sr-tin-shield",
+    rwrSymbol: "TS",
+    name: "Tin Shield SR",
+    category: "SR",
+    maxRangeNm: "N/A",
+    maxAltFt: "N/A",
+    countermeasure: "Evade",
+    harmCode: "130",
+    image: require('./assets/threats/TinShield.png'),
+    linkedSystems:["5", "10"]
   }
 ];
