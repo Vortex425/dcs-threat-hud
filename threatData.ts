@@ -19,7 +19,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "10",
     name: "SA-10 Grumble S-300PS",
     category: "SAM",
-    maxRangeNm: "48/++",
+    maxRangeNm: "48",
     maxAltFt: "++",      // > 50.000ft
     countermeasure: "Chaff",
     harmCode: "110"
@@ -29,7 +29,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "15",
     name: "SA-15 Gauntlet Tor",
     category: "SAM",
-    maxRangeNm: "09/20",
+    maxRangeNm: "09",
     maxAltFt: "20",      // 20.000ft
     countermeasure: "Chaff",
     harmCode: "119"
@@ -39,7 +39,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "P",
     name: "Patriot",
     category: "SAM",
-    maxRangeNm: "60/++",
+    maxRangeNm: "60",
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "202"
@@ -49,7 +49,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "2",
     name: "SA-2 Guideline S-75",
     category: "SAM",
-    maxRangeNm: "27/++",
+    maxRangeNm: "27",
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "126"
@@ -59,7 +59,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "3",
     name: "SA-3 Goa S-125",
     category: "SAM",
-    maxRangeNm: "13/++",
+    maxRangeNm: "13",
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "123"
@@ -69,8 +69,8 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "5",
     name: "SA-5 Gammon S-200",
     category: "SAM",
-    maxRangeNm: "160/+",
-    maxAltFt: "+",
+    maxRangeNm: "160",
+    maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "129"
   },
@@ -79,7 +79,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "6",
     name: "SA-6 Gainful Kub",
     category: "SAM",
-    maxRangeNm: "18/27",
+    maxRangeNm: "18",
     maxAltFt: "27",
     countermeasure: "Chaff",
     harmCode: "108"
@@ -89,7 +89,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "7",
     name: "HQ-7B",
     category: "SAM",
-    maxRangeNm: "10/18",
+    maxRangeNm: "10",
     maxAltFt: "18",
     countermeasure: "Evade",
     harmCode: "127"
@@ -99,7 +99,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "8",
     name: "SA-8 Gecko Osa",
     category: "SAM",
-    maxRangeNm: "07/17",
+    maxRangeNm: "07",
     maxAltFt: "17",
     countermeasure: "Chaff",
     harmCode: "117"
@@ -109,7 +109,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "11",
     name: "SA-11 Gadfly Buk",
     category: "SAM",
-    maxRangeNm: "29/++",
+    maxRangeNm: "29",
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "115"
@@ -119,7 +119,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "13",
     name: "SA-13 Gopher Strela-10M",
     category: "SAM",
-    maxRangeNm: "03/12",
+    maxRangeNm: "03",
     maxAltFt: "12",
     countermeasure: "Flares",
     harmCode: "118"
@@ -129,7 +129,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "19",
     name: "SA-19 Grison Tunguska",
     category: "SAM",
-    maxRangeNm: "05/12",
+    maxRangeNm: "05",
     maxAltFt: "12",
     countermeasure: "Evade",
     harmCode: "120"
@@ -139,7 +139,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "22",
     name: "SA-22 Greyhound Pantsir-S1",
     category: "SAM",
-    maxRangeNm: "11/33",
+    maxRangeNm: "11",
     maxAltFt: "33",
     countermeasure: "Chaff",
     harmCode: "134"
@@ -149,7 +149,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "HK",
     name: "Hawk",
     category: "SAM",
-    maxRangeNm: "14/++",
+    maxRangeNm: "14",
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "204"
@@ -159,7 +159,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "IT",
     name: "IRIS-T SLM",
     category: "SAM",
-    maxRangeNm: "22/++",
+    maxRangeNm: "22",
     maxAltFt: "++",
     countermeasure: "Flares",
     harmCode: "135"
@@ -169,7 +169,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "NS",
     name: "NASAMS AIM-120B",
     category: "SAM",
-    maxRangeNm: "13/35",
+    maxRangeNm: "13",
     maxAltFt: "35",
     countermeasure: "Chaff",
     harmCode: "209"
@@ -179,7 +179,7 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "RO",
     name: "Roland",
     category: "SAM",
-    maxRangeNm: "05/20",
+    maxRangeNm: "05",
     maxAltFt: "20",
     countermeasure: "Chaff",
     harmCode: "201"
