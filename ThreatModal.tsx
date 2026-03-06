@@ -27,45 +27,54 @@ const getCmColor = (cm: string) => {
   }
 };
 
+const getThreatLevelColor = (level?: string) => {
+  switch (level) {
+    case 'Low': return '#39FF14';    // Grün
+    case 'Medium': return '#FFA500'; // Orange
+    case 'High': return '#FF003C';   // Rot
+    case 'Blue': return '#0088ff'
+    default: return '#39FF14';
+  }
+};
+
 export default function ThreatModal({ threat, visible, onClose }: Props) {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    if (visible) {
+    if (visible && threat) {
+      let duration = 200; // Standard: High (sehr schnell)
+      if (threat.threatLevel === 'Medium') duration = 500; // Mittel (pulsierend)
+      if (threat.threatLevel === 'Low') duration = 1000;   // Low (ruhiges Atmen)
+      if (threat.threatLevel === 'Blue') duration = 0;
+
       Animated.loop(
         Animated.sequence([
-          Animated.timing(fadeAnim, {
-            toValue: 0.2,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-          Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 200,
-            useNativeDriver: true,
-          })
+          Animated.timing(fadeAnim, { toValue: 0.2, duration: duration, useNativeDriver: true }),
+          Animated.timing(fadeAnim, { toValue: 1, duration: duration, useNativeDriver: true })
         ])
       ).start();
     } else {
       fadeAnim.setValue(1);
     }
-  }, [visible, fadeAnim]);
+  }, [visible, threat, fadeAnim]);
 
   if (!threat) return null;
+
+  const headerColor = getThreatLevelColor(threat.threatLevel);
 
   return (
     <Modal transparent={true} visible={visible} animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.mfdScreen}>
 
-          <Animated.Text style={[styles.warningHeader, { opacity: fadeAnim }]}>
-            <Text style={styles.blink}>[!]</Text> TARGET LOCKED: {threat.rwrSymbol}
+          <Animated.Text style={[styles.warningHeader, { opacity: fadeAnim, color: headerColor }]}>
+            <Text style={{ color: headerColor }}>[!]</Text> THREAT LEVEL: {threat.threatLevel.toUpperCase()}
           </Animated.Text>
 
           <View style={styles.divider} />
 
-          <ScrollView 
-            style={styles.scrollArea} 
+          <ScrollView
+            style={styles.scrollArea}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false} // Versteckt die Scrollbar für einen cleanen Look
           >
@@ -79,7 +88,7 @@ export default function ThreatModal({ threat, visible, onClose }: Props) {
                   <Text style={{ color: '#005500', fontFamily: 'monospace' }}>[ NO VISUAL DATA ]</Text>
                 </View>
               )}
-              
+
               <Text style={styles.infoLine}>SYS:  {threat.name}</Text>
               <Text style={styles.infoLine}>TYPE: {threat.category}</Text>
               <Text style={styles.infoLine}>RNG:  {threat.maxRangeNm} NM</Text>
@@ -126,10 +135,11 @@ export default function ThreatModal({ threat, visible, onClose }: Props) {
   );
 }
 
+
 const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.85)', justifyContent: 'center', alignItems: 'center' },
-  mfdScreen: { width: '85%', maxHeight:'85%', backgroundColor: '#001100', borderWidth: 2, borderColor: '#39FF14', padding: 20, shadowColor: '#39FF14', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.5, shadowRadius: 15, elevation: 10 },
-  warningHeader: { color: '#FF003C', fontFamily: 'monospace', fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
+  mfdScreen: { width: '85%', maxHeight: '85%', backgroundColor: '#001100', borderWidth: 2, borderColor: '#39FF14', padding: 20, shadowColor: '#39FF14', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.5, shadowRadius: 15, elevation: 10 },
+  warningHeader: { color: '#FF003C', fontFamily: 'monospace', fontSize: 19, fontWeight: 'bold', marginBottom: 10 },
   blink: { color: '#FF003C' },
   divider: { height: 2, backgroundColor: '#005500', marginBottom: 15 },
   dataBlock: { marginBottom: 20 },

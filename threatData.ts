@@ -11,7 +11,8 @@ export interface Threat {
   countermeasure: 'Chaff' | 'Flares' | 'Evade';
   harmCode: string;
   image?: any;
-  linkedSystems?: string[]
+  linkedSystems?: string[];
+  threatLevel: 'Low' | 'Medium' | 'High' | 'Blue';
 }
 
 // Unsere F/A-18C Datenbank, direkt aus deinem Cheat-Sheet extrahiert.
@@ -26,7 +27,8 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Chaff",
     harmCode: "110",
     image: require('./assets/threats/SA-10Launcher.png'),
-    linkedSystems: ["BB", "CS", "TS"]
+    linkedSystems: ["BB", "CS", "TS"],
+    threatLevel: 'High',
   },
   {
     id: "sa-15",
@@ -38,7 +40,8 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Chaff",
     harmCode: "119",
     image: require('./assets/threats/SA-15.png'),
-    linkedSystems: ["DE"]
+    linkedSystems: ["DE"],
+    threatLevel: 'Medium',
   },
   {
     id: "patriot",
@@ -49,7 +52,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "202",
-    image: require('./assets/threats/Patriot.png')
+    image: require('./assets/threats/Patriot.png'),
+    threatLevel: 'Blue',
   },
   {
     id: "sa-2",
@@ -61,7 +65,8 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Chaff",
     harmCode: "126",
     image: require('./assets/threats/SA-2Launcher.png'),
-    linkedSystems: ["S"]
+    linkedSystems: ["S"],
+    threatLevel: 'Medium',
   },
   {
     id: "sa-3",
@@ -73,7 +78,8 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Chaff",
     harmCode: "123",
     image: require('./assets/threats/SA-3Launcher.png'),
-    linkedSystems:["S"]
+    linkedSystems:["S"],
+    threatLevel: 'Medium',
   },
   {
     id: "sa-5",
@@ -85,7 +91,8 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Chaff",
     harmCode: "129",
     image: require('./assets/threats/SA-5Launcher.png'),
-    linkedSystems: ["S","TS"]
+    linkedSystems: ["S","TS"],
+    threatLevel: 'High',
   },
   {
     id: "sa-6",
@@ -96,7 +103,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "27",
     countermeasure: "Chaff",
     harmCode: "108",
-    image: require('./assets/threats/SA-6Launcher.png')
+    image: require('./assets/threats/SA-6Launcher.png'),
+    threatLevel: 'Medium',
   },
   {
     id: "hq-7b",
@@ -107,7 +115,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "18",
     countermeasure: "Evade",
     harmCode: "127",
-    image: require('./assets/threats/hq-7q.png')
+    image: require('./assets/threats/hq-7q.png'),
+    threatLevel: 'Low',
   },
   {
     id: "sa-8",
@@ -118,19 +127,21 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "17",
     countermeasure: "Chaff",
     harmCode: "117",
-    image: require('./assets/threats/SA-8.png')
+    image: require('./assets/threats/SA-8.png'),
+    threatLevel: 'Low',
   },
   {
     id: "sa-11",
     rwrSymbol: "11",
-    name: "SA-11 Gadfly Buk",
+    name: "SA-11 Buk",
     category: "SAM",
     maxRangeNm: "29",
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "115",
     image: require('./assets/threats/SA-11Launcher.png'),
-    linkedSystems: ["SD"]
+    linkedSystems: ["SD"],
+    threatLevel: 'High',
   },
   {
     id: "sa-13",
@@ -142,7 +153,8 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Flares",
     harmCode: "118",
     image: require('./assets/threats/SA-13.png'),
-    linkedSystems:  ["DE"]
+    linkedSystems:  ["DE"],
+    threatLevel: 'Low',
   },
   {
     id: "sa-19",
@@ -154,7 +166,8 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Evade",
     harmCode: "120",
     image: require('./assets/threats/SA-19.png'),
-    linkedSystems: ["DE"]
+    linkedSystems: ["DE"],
+    threatLevel: 'Low',
   },
   {
     id: "sa-22",
@@ -165,7 +178,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "33",
     countermeasure: "Chaff",
     harmCode: "134",
-    image: require('./assets/threats/SA-22.png')
+    image: require('./assets/threats/SA-22.png'),
+    threatLevel: 'High',
   },
   {
     id: "hawk",
@@ -176,7 +190,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "204",
-    image: require('./assets/threats/HAWK.png')
+    image: require('./assets/threats/HAWK.png'),
+    threatLevel: 'Blue',
   },
   {
     id: "iris-t",
@@ -187,7 +202,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "++",
     countermeasure: "Flares",
     harmCode: "135",
-    image: require('./assets/threats/IRIS-T.png')
+    image: require('./assets/threats/IRIS-T.png'),
+    threatLevel: 'Blue',
   },
   {
     id: "nasams-b",
@@ -197,7 +213,8 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "13",
     maxAltFt: "35",
     countermeasure: "Chaff",
-    harmCode: "209"
+    harmCode: "209",
+    threatLevel: 'Blue',
   },
   {
     id: "roland",
@@ -207,7 +224,9 @@ export const fa18cThreats: Threat[] = [
     maxRangeNm: "05",
     maxAltFt: "20",
     countermeasure: "Chaff",
-    harmCode: "201"
+    harmCode: "201",
+    image: require('./assets/threats/Roland.png'),
+    threatLevel: 'Blue',
   },
 
   // ==========================================
@@ -222,7 +241,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "39",
     countermeasure: "Chaff",
     harmCode: "415",
-    image: require('./assets/threats/Tor-M2Ship.png')
+    image: require('./assets/threats/Tor-M2Ship.png'),
+    threatLevel: 'Medium',
   },
   {
     id: "ship-type-052C",
@@ -233,7 +253,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "410 | 313",
-    image: require('./assets/threats/PyotrVelikiy.png')
+    image: require('./assets/threats/PyotrVelikiy.png'),
+    threatLevel: 'High',
   },
   {
     id: "ship-grisha",
@@ -244,7 +265,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "15",
     countermeasure: "Chaff",
     harmCode: "306",
-    image: require('./assets/threats/Grisha.png')
+    image: require('./assets/threats/Grisha.png'),
+    threatLevel: 'Low',
   },
   {
     id: "ship-molniya",
@@ -255,7 +277,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "9",
     countermeasure: "Evade",
     harmCode: "312",
-    image: require('./assets/threats/Molniya.png')
+    image: require('./assets/threats/Molniya.png'),
+    threatLevel: 'Low',
   },
   {
     id: "ship-neustrashimy_rezky",
@@ -266,7 +289,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "20",
     countermeasure: "Chaff",
     harmCode: "319 | 309",
-    image: require('./assets/threats/Neustrashimy.png')
+    image: require('./assets/threats/Neustrashimy.png'),
+    threatLevel: 'Medium',
   },
   {
     id: "ship-kuznetsov",
@@ -277,7 +301,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "20",
     countermeasure: "Chaff",
     harmCode: "320",
-    image: require('./assets/threats/kuznetsov.png')
+    image: require('./assets/threats/kuznetsov.png'),
+    threatLevel: 'Medium',
   },
   {
     id: "ship-moskva",
@@ -288,7 +313,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "++",
     countermeasure: "Chaff",
     harmCode: "303",
-    image: require('./assets/threats/Moskva.png')
+    image: require('./assets/threats/Moskva.png'),
+    threatLevel: 'High',
   },
   {
     id: "ship-ropucha",
@@ -299,7 +325,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "9",
     countermeasure: "Evade",
     harmCode: "321",
-    image: require('./assets/threats/LSRopucha.png')
+    image: require('./assets/threats/LSRopucha.png'),
+    threatLevel: 'Low',
   },
 
   // ==========================================
@@ -314,7 +341,8 @@ export const fa18cThreats: Threat[] = [
     "maxAltFt": "10",
     "countermeasure": "Evade",
     "harmCode": "207/121/208",
-    image: require('./assets/threats/Shilka.png')
+    image: require('./assets/threats/Shilka.png'),
+    threatLevel: 'Low',
   },
 
   // ==========================================
@@ -329,7 +357,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "N/A",
     countermeasure: "Evade",
     harmCode: "N/A",
-    image: require('./assets/threats/MiG-19.png')
+    image: require('./assets/threats/MiG-19.png'),
+    threatLevel: 'Low',
   },
   {
     id: "air-mig21bis",
@@ -340,7 +369,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "N/A",
     countermeasure: "Evade",
     harmCode: "N/A",
-    image: require('./assets/threats/MiG-21.png')
+    image: require('./assets/threats/MiG-21.png'),
+    threatLevel: 'Low',
   },
   {
     id: "air-mig23mld",
@@ -351,7 +381,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "N/A",
     countermeasure: "Evade",
     harmCode: "N/A",
-    image: require('./assets/threats/MiG-23MLD.png')
+    image: require('./assets/threats/MiG-23MLD.png'),
+    threatLevel: 'Medium',
   },
   {
     id: "air-mig25pd",
@@ -362,7 +393,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "N/A",
     countermeasure: "Evade",
     harmCode: "N/A",
-    image: require('./assets/threats/MiG-25.png')
+    image: require('./assets/threats/MiG-25.png'),
+    threatLevel: 'High',
   },
   {
     "id": "air-mig29-su27-j11",
@@ -373,7 +405,8 @@ export const fa18cThreats: Threat[] = [
     "maxAltFt": "N/A",
     "countermeasure": "Evade",
     "harmCode": "N/A",
-    image: require('./assets/threats/MiG-29.png')
+    image: require('./assets/threats/MiG-29.png'),
+    threatLevel: 'High',
   },
   {
     id: "air-su30",
@@ -384,7 +417,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "N/A",
     countermeasure: "Evade",
     harmCode: "N/A",
-    image: require('./assets/threats/Su-30.png')
+    image: require('./assets/threats/Su-30.png'),
+    threatLevel: 'High',
   },
   {
     id: "air-mig31",
@@ -395,7 +429,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "N/A",
     countermeasure: "Evade",
     harmCode: "N/A",
-    image: require('./assets/threats/MiG-31.png')
+    image: require('./assets/threats/MiG-31.png'),
+    threatLevel: 'High',
   },
   {
     id: "air-su34",
@@ -406,7 +441,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "N/A",
     countermeasure: "Evade",
     harmCode: "N/A",
-    image: require('./assets/threats/Su-34.png')
+    image: require('./assets/threats/Su-34.png'),
+    threatLevel: 'High',
   },
   {
     id: "air-jf17",
@@ -417,7 +453,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "N/A",
     countermeasure: "Evade",
     harmCode: "N/A",
-    image: require('./assets/threats/JF-17.png')
+    image: require('./assets/threats/JF-17.png'),
+    threatLevel: 'High',
   },
   {
     id: "air-a50",
@@ -428,7 +465,8 @@ export const fa18cThreats: Threat[] = [
     maxAltFt: "N/A",
     countermeasure: "Evade",
     harmCode: "N/A",
-    image: require('./assets/threats/A-50.png')
+    image: require('./assets/threats/A-50.png'),
+    threatLevel: 'Medium',
   },
 
   // ==========================================
@@ -439,71 +477,77 @@ export const fa18cThreats: Threat[] = [
     rwrSymbol: "S",
     name: "Flat Face B SR",
     category: "SR",
-    maxRangeNm: "N/A",
-    maxAltFt: "N/A",
+    maxRangeNm: "54",
+    maxAltFt: "++",
     countermeasure: "Evade",
     harmCode: "122",
     image: require('./assets/threats/P-15-FlatFace.png'),
-    linkedSystems: ["2", "3", "5"]
+    linkedSystems: ["2", "3", "5"],
+    threatLevel: 'Medium',
   },
   {
     id: "sr-big-bird",
     rwrSymbol: "BB",
     name: "Big Bird long range SR",
     category: "SR",
-    maxRangeNm: "N/A",
-    maxAltFt: "N/A",
+    maxRangeNm: "162",
+    maxAltFt: "++",
     countermeasure: "Evade",
     harmCode: "104",
     image: require('./assets/threats/BigBird.png'),
-    linkedSystems: ["10"]
+    linkedSystems: ["10"],
+    threatLevel: 'High',
   },
   {
     id: "sr-clam-shell",
     rwrSymbol: "CS",
     name: "Clam Shell low altitude SR",
     category: "SR",
-    maxRangeNm: "N/A",
-    maxAltFt: "N/A",
+    maxRangeNm: "65",
+    maxAltFt: "15",
     countermeasure: "Evade",
     harmCode: "103",
     image: require('./assets/threats/ClamShell.png'),
-    linkedSystems: ["10"]
+    linkedSystems: ["10"],
+    threatLevel: 'Medium',
   },
   {
     id: "sr-dog-ear",
     rwrSymbol: "DE",
     name: "Dog Ear Sborka SR",
     category: "SR",
-    maxRangeNm: "N/A",
-    maxAltFt: "N/A",
+    maxRangeNm: "19",
+    maxAltFt: "33",
     countermeasure: "Evade",
     harmCode: "131",
     image: require('./assets/threats/DogEar.png'),
-    linkedSystems: ["13", "15", "19"]
+    linkedSystems: ["13", "15", "19"],
+    threatLevel: 'Low',
   },
   {
     id: "sr-snow-drift",
     rwrSymbol: "SD",
     name: "Snow Drift SR",
     category: "SR",
-    maxRangeNm: "N/A",
-    maxAltFt: "N/A",
+    maxRangeNm: "46",
+    maxAltFt: "++",
     countermeasure: "Evade",
     harmCode: "107",
     image: require('./assets/threats/SnowDrift.png'),
-    linkedSystems: ["11"]
+    linkedSystems: ["11"],
+    threatLevel: 'Medium',
   },
   {
     id: "sr-tin-shield",
     rwrSymbol: "TS",
     name: "Tin Shield SR",
     category: "SR",
-    maxRangeNm: "N/A",
-    maxAltFt: "N/A",
+    maxRangeNm: "80",
+    maxAltFt: "++",
     countermeasure: "Evade",
     harmCode: "130",
     image: require('./assets/threats/TinShield.png'),
-    linkedSystems:["5", "10"]
+    linkedSystems:["5", "10"],
+    threatLevel: 'High',
   }
 ];
