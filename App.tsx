@@ -137,6 +137,7 @@ export default function App() {
         threat={selectedThreat}
         visible={modalVisible}
         onClose={closeMfd}
+        onNavigate={handleThreatSelect}
       />
     </SafeAreaView>
   );

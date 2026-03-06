@@ -1,4 +1,4 @@
-// 🎯 Vibe: MFD Tactical Readout - Mit pulsierendem Lock-On & CM-Colors
+// 🎯 Vibe: MFD Tactical Readout - Mit Hyperlinks & Blue-Bugfix
 import React, { useEffect, useRef } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated, Image, ScrollView } from 'react-native';
 import { Threat, fa18cThreats } from './threatData';
@@ -7,6 +7,7 @@ interface Props {
   threat: Threat | null;
   visible: boolean;
   onClose: () => void;
+  onNavigate: (threat: Threat) => void; // 🔥 NEU: Erlaubt das Springen zu anderen Threats
 }
 
 const formatAltitude = (altStr: string) => {
@@ -17,45 +18,52 @@ const formatAltitude = (altStr: string) => {
   return altStr;
 };
 
-// 🔥 Neue Hilfsfunktion für die exakten Cheat-Sheet Farben
 const getCmColor = (cm: string) => {
   switch (cm) {
-    case 'Chaff': return '#00BFFF'; // Taktisches Hellblau
-    case 'Flares': return '#FFA500'; // Warn-Orange
-    case 'Evade': return '#FF00FF'; // Magenta/Pink
-    default: return '#39FF14'; // Fallback auf MFD-Grün
+    case 'Chaff': return '#00BFFF'; 
+    case 'Flares': return '#FFA500'; 
+    case 'Evade': return '#FF00FF'; 
+    default: return '#39FF14'; 
   }
 };
 
 const getThreatLevelColor = (level?: string) => {
   switch (level) {
-    case 'Low': return '#39FF14';    // Grün
-    case 'Medium': return '#FFA500'; // Orange
-    case 'High': return '#FF003C';   // Rot
-    case 'Blue': return '#0088ff'
+    case 'Low': return '#39FF14';    
+    case 'Medium': return '#FFA500'; 
+    case 'High': return '#FF003C';   
+    case 'Blue': return '#0088ff';
     default: return '#39FF14';
   }
 };
 
-export default function ThreatModal({ threat, visible, onClose }: Props) {
+export default function ThreatModal({ threat, visible, onClose, onNavigate }: Props) {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    if (visible && threat) {
-      let duration = 200; // Standard: High (sehr schnell)
-      if (threat.threatLevel === 'Medium') duration = 500; // Mittel (pulsierend)
-      if (threat.threatLevel === 'Low') duration = 1000;   // Low (ruhiges Atmen)
-      if (threat.threatLevel === 'Blue') duration = 0;
-
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(fadeAnim, { toValue: 0.2, duration: duration, useNativeDriver: true }),
-          Animated.timing(fadeAnim, { toValue: 1, duration: duration, useNativeDriver: true })
-        ])
-      ).start();
-    } else {
+    // Wenn das Modal zu ist, Animation zurücksetzen
+    if (!visible || !threat) {
       fadeAnim.setValue(1);
+      return;
     }
+
+    // 🔥 BUGFIX: Bei 'Blue' gar nicht erst den Loop starten, sondern statisch auf 1 (sichtbar) setzen
+    if (threat.threatLevel === 'Blue') {
+      fadeAnim.setValue(1);
+      return;
+    }
+
+    let duration = 200; 
+    if (threat.threatLevel === 'Medium') duration = 500; 
+    if (threat.threatLevel === 'Low') duration = 1000;   
+
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(fadeAnim, { toValue: 0.2, duration: duration, useNativeDriver: true }),
+        Animated.timing(fadeAnim, { toValue: 1, duration: duration, useNativeDriver: true })
+      ])
+    ).start();
+
   }, [visible, threat, fadeAnim]);
 
   if (!threat) return null;
@@ -76,7 +84,7 @@ export default function ThreatModal({ threat, visible, onClose }: Props) {
           <ScrollView
             style={styles.scrollArea}
             contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false} // Versteckt die Scrollbar für einen cleanen Look
+            showsVerticalScrollIndicator={false}
           >
             <View style={styles.dataBlock}>
               {threat.image ? (
@@ -106,12 +114,18 @@ export default function ThreatModal({ threat, visible, onClose }: Props) {
                     if (!linkedThreat) return null;
 
                     return (
-                      <View key={idx} style={styles.linkRow}>
+                      // 🔥 NEU: TouchableOpacity macht die Zeile klickbar und nutzt onNavigate
+                      <TouchableOpacity 
+                        key={idx} 
+                        style={styles.linkRow}
+                        onPress={() => onNavigate(linkedThreat)}
+                        activeOpacity={0.6} // Leichtes Feedback beim Antippen
+                      >
                         <View style={styles.linkSymbolCircle}>
                           <Text style={styles.linkSymbolText}>{linkedThreat.rwrSymbol}</Text>
                         </View>
                         <Text style={styles.linkNameText}>{linkedThreat.name}</Text>
-                      </View>
+                      </TouchableOpacity>
                     );
                   })}
                 </View>
@@ -124,7 +138,6 @@ export default function ThreatModal({ threat, visible, onClose }: Props) {
             </View>
           </ScrollView>
 
-          {/* 🔥 Fixierter Close-Button */}
           <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
             <Text style={styles.closeText}>[ BREAK LOCK ]</Text>
           </TouchableOpacity>
@@ -135,8 +148,8 @@ export default function ThreatModal({ threat, visible, onClose }: Props) {
   );
 }
 
-
 const styles = StyleSheet.create({
+  // Hier bleiben deine bestehenden Styles exakt so erhalten, wie sie waren!
   overlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.85)', justifyContent: 'center', alignItems: 'center' },
   mfdScreen: { width: '85%', maxHeight: '85%', backgroundColor: '#001100', borderWidth: 2, borderColor: '#39FF14', padding: 20, shadowColor: '#39FF14', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.5, shadowRadius: 15, elevation: 10 },
   warningHeader: { color: '#FF003C', fontFamily: 'monospace', fontSize: 19, fontWeight: 'bold', marginBottom: 10 },
@@ -149,19 +162,19 @@ const styles = StyleSheet.create({
   closeBtn: { alignSelf: 'center', padding: 10 },
   closeText: { color: '#005500', fontFamily: 'monospace', fontSize: 16, fontWeight: 'bold' },
   scrollArea: {
-    flexShrink: 1, // Stellt sicher, dass die ScrollView nur den verfügbaren Platz nutzt
+    flexShrink: 1,
     width: '100%',
   },
   scrollContent: {
-    paddingBottom: 20, // Luft nach unten am Ende des Scroll-Bereichs
+    paddingBottom: 20,
   },
   imageContainer: {
     width: '100%',
-    height: 180, // Festgelegte Höhe für den Bilder-Bereich
+    height: 180, 
     borderWidth: 2,
-    borderColor: '#39FF14', // Dunkelgrüner Rahmen für den MFD-Look
+    borderColor: '#39FF14', 
     marginBottom: 15,
-    overflow: 'hidden', // Wichtig, damit das Bild nicht über den Rahmen ragt
+    overflow: 'hidden', 
   },
   threatImage: {
     width: '100%',
@@ -188,7 +201,7 @@ const styles = StyleSheet.create({
   linkSymbolCircle: {
     width: 32,
     height: 32,
-    borderRadius: 16, // Macht die Box komplett rund
+    borderRadius: 16, 
     borderWidth: 1.5,
     borderColor: '#39FF14',
     justifyContent: 'center',
