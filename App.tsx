@@ -1,19 +1,23 @@
 // 🚀 App.tsx - Unser Main Terminal (Mit OSB Hardware Buttons & Suche)
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import RwrGrid from './RwrGrid';
 import ThreatModal from './ThreatModal';
+import TargetIndex from './GroundTargetIndex';
 import { fa18cThreats, Threat } from './threatData';
 
 type FilterCategory = 'ALL' | 'SAM' | 'AAA' | 'SHIP' | 'AIR' | 'SR';
+type MfdPage = 'RWR_DATABASE' | 'TARGET_INDEX';
 
 export default function App() {
+  const [activeApp, setActiveApp] = useState<MfdPage>('RWR_DATABASE');
   const [selectedThreat, setSelectedThreat] = useState<Threat | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('ALL');
+  const touchStartX = useRef(0);
 
-  // 🔥 Neue States für die Suchfunktion
+  // Neue Suchfunktion
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
 
@@ -27,8 +31,12 @@ export default function App() {
     setTimeout(() => setSelectedThreat(null), 300);
   };
 
-  // 🔥 Die Filter-Logik kombiniert jetzt Kategorie-Button UND Sucheintrag
-  // 🔥 Die kombinierte Filter- und Sortier-Logik
+  //Funktion zum Wechseln der MFD Seiten
+  const toggleMfdPage = () => {
+    setActiveApp(prev => prev === 'RWR_DATABASE' ? 'TARGET_INDEX' : 'RWR_DATABASE');
+  };
+
+  // Die kombinierte Filter- und Sortier-Logik
   const filteredAndSortedThreats = fa18cThreats
     .filter(t => {
       // 1. Kategorie-Filter
@@ -69,76 +77,94 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
 
-      <View style={styles.headerConsole}>
-        <Text style={styles.glitchText}>[ RWR DATABASE ]</Text>
-        <Text style={styles.subText}>SYSTEM ONLINE ...</Text>
-      </View>
+      {/* 🔥 NEU: Der interaktive Header mit Swipe-Erkennung und Pfeilen */}
+      <View 
+        style={styles.headerConsole}
+        onTouchStart={(e) => {
+          touchStartX.current = e.nativeEvent.pageX; // <-- .current nutzen
+        }}
+        onTouchEnd={(e) => {
+          const touchEndX = e.nativeEvent.pageX;
+          // Prüfen, ob mehr als 50 Pixel gewischt wurde
+          if (Math.abs(touchEndX - touchStartX.current) > 50) { // <-- .current nutzen
+            toggleMfdPage();
+          }
+        }}
+      >
+        <View style={styles.titleRow}>
+          <TouchableOpacity onPress={toggleMfdPage} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}>
+            <Text style={styles.navArrow}>{'<'}</Text>
+          </TouchableOpacity>
+          
+          <Text style={styles.glitchText}>
+            {activeApp === 'RWR_DATABASE' ? '[ RWR DATABASE ]' : '[ TARGET INDEX ]'}
+          </Text>
 
-      {/* 🎯 Taktische OSB-Leiste */}
-      <View style={styles.mfdBezel}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScroll}>
-          {categories.map(cat => (
-            <View key={cat} style={styles.osbGroup}>
-              <TouchableOpacity
-                style={[styles.osbHardwareBtn, activeFilter === cat && styles.osbHardwareBtnActive]}
-                onPress={() => setActiveFilter(cat)}
-                activeOpacity={0.7}
-              />
-              <View style={[styles.osbConnector, activeFilter === cat && styles.osbConnectorActive]} />
-              <Text style={[styles.osbScreenText, activeFilter === cat && styles.osbScreenTextActive]}>
-                {cat}
-              </Text>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-
-      <View style={styles.radarScreen}>
-
-        {/* 🔥 Taktisches Such-Overlay oben rechts */}
-        <View style={styles.sideSearchContainer}>
-          {isSearchActive && (
-            <TextInput
-              style={styles.searchInput}
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              placeholder="TARGET..."
-              placeholderTextColor="#005500"
-              autoCapitalize="characters"
-              autoFocus={true}
-            />
-          )}
-          <TouchableOpacity
-            style={[styles.rightEdgeBtn, isSearchActive && styles.rightEdgeBtnActive]}
-            onPress={() => {
-              setIsSearchActive(!isSearchActive);
-              if (isSearchActive) setSearchQuery('');
-            }}
-          >
-            {/* Wir splitten den Text auf und rendern jeden Buchstaben untereinander */}
-            {(isSearchActive ? ['⊓', 'X', '⊔'] : ['⊓', 'S', 'R', 'C', 'H', '⊔']).map((char, index) => (
-              <Text
-                key={index}
-                style={[styles.verticalChar, isSearchActive && styles.verticalCharActive]}
-              >
-                {char}
-              </Text>
-            ))}
+          <TouchableOpacity onPress={toggleMfdPage} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}>
+            <Text style={styles.navArrow}>{'>'}</Text>
           </TouchableOpacity>
         </View>
-
-        <RwrGrid
-          threats={filteredAndSortedThreats} // <-- Hier die sortierte Liste übergeben
-          onThreatSelect={handleThreatSelect}
-          />
+        <Text style={styles.subText}>SYSTEM ONLINE ... SWIPE TITLE TO SWITCH</Text>
       </View>
 
-      <ThreatModal
-        threat={selectedThreat}
-        visible={modalVisible}
-        onClose={closeMfd}
-        onNavigate={handleThreatSelect}
-      />
+      {/* 🔥 NEU: Hier weicheln wir zwischen RWR und TARGET INDEX */}
+      {activeApp === 'RWR_DATABASE' ? (
+        <>
+          {/* Deine OSB-Leiste */}
+          <View style={styles.mfdBezel}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScroll}>
+              {categories.map(cat => (
+                <View key={cat} style={styles.osbGroup}>
+                  <TouchableOpacity
+                    style={[styles.osbHardwareBtn, activeFilter === cat && styles.osbHardwareBtnActive]}
+                    onPress={() => setActiveFilter(cat)}
+                    activeOpacity={0.7}
+                  />
+                  <View style={[styles.osbConnector, activeFilter === cat && styles.osbConnectorActive]} />
+                  <Text style={[styles.osbScreenText, activeFilter === cat && styles.osbScreenTextActive]}>
+                    {cat}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+
+          {/* Dein Radar Screen */}
+          <View style={styles.radarScreen}>
+            <View style={styles.sideSearchContainer}>
+              {isSearchActive && (
+                <TextInput
+                  style={styles.searchInput}
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  placeholder="TARGET..."
+                  placeholderTextColor="#005500"
+                  autoCapitalize="characters"
+                  autoFocus={true}
+                />
+              )}
+              <TouchableOpacity
+                style={[styles.rightEdgeBtn, isSearchActive && styles.rightEdgeBtnActive]}
+                onPress={() => {
+                  setIsSearchActive(!isSearchActive);
+                  if (isSearchActive) setSearchQuery('');
+                }}
+              >
+                {(isSearchActive ? ['⊓', 'X', '⊔'] : ['⊓', 'S', 'R', 'C', 'H', '⊔']).map((char, index) => (
+                  <Text key={index} style={[styles.verticalChar, isSearchActive && styles.verticalCharActive]}>{char}</Text>
+                ))}
+              </TouchableOpacity>
+            </View>
+
+            <RwrGrid threats={filteredAndSortedThreats} onThreatSelect={handleThreatSelect} />
+          </View>
+        </>
+      ) : (
+        /* 🔥 Wenn TARGET_INDEX aktiv ist, blenden wir die OSB-Leiste und das Grid aus und zeigen die PDF-Bilder */
+        <TargetIndex />
+      )}
+
+      <ThreatModal threat={selectedThreat} visible={modalVisible} onClose={closeMfd} onNavigate={handleThreatSelect} />
     </SafeAreaView>
   );
 }
@@ -169,6 +195,18 @@ const styles = StyleSheet.create({
     textShadowColor: '#39FF14',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 15,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 15, // Abstand zwischen Pfeilen und Titel
+  },
+  navArrow: {
+    color: '#005500', // Etwas dunkler als der Haupttitel, damit es subtil bleibt
+    fontFamily: 'monospace',
+    fontSize: 28,
+    fontWeight: 'bold',
   },
   subText: {
     color: '#005500',
