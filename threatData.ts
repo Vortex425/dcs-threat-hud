@@ -1,6 +1,5 @@
-// 🚀 threatData.ts - Unsere RWR Daten-DNA
+// threatData.ts - RWR Daten
 
-// Der Bauplan für jeden Threat. Sorgt für sauberen Code ohne Überraschungen.
 export interface Threat {
   id: string;
   rwrSymbol: string;
@@ -12,7 +11,6 @@ export interface Threat {
   harmCode: string;
 }
 
-// Unsere F/A-18C Datenbank, direkt aus deinem Cheat-Sheet extrahiert.
 export const fa18cThreats: Threat[] = [
   {
     id: "sa-10",
@@ -186,7 +184,7 @@ export const fa18cThreats: Threat[] = [
   },
 
   // ==========================================
-  // 🚢 NAVAL (Schiffe & Trägergruppen)
+  //     NAVAL (Schiffe & Trägergruppen)
   // ==========================================
   {
     id: "ship-tor-m2",
@@ -270,7 +268,7 @@ export const fa18cThreats: Threat[] = [
   },
 
   // ==========================================
-  // 💥 AAA (Flak & SPAAA)
+  //          AAA (Flak & SPAAA)
   // ==========================================
   {
     id: "aaa-gepard",
@@ -304,7 +302,7 @@ export const fa18cThreats: Threat[] = [
   },
 
   // ==========================================
-  // ✈️ AIR (Bandits & AWACS) - REDFOR ONLY
+  //    AIR (Bandits & AWACS) - REDFOR ONLY
   // ==========================================
   {
     id: "air-mig19p",
