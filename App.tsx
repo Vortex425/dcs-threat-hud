@@ -6,13 +6,13 @@ import RwrGrid from './RwrGrid';
 import ThreatModal from './ThreatModal';
 import { fa18cThreats, Threat } from './threatData';
 
-type FilterCategory = 'ALL' | 'SAM' | 'AAA' | 'SHIP' | 'AIR';
+type FilterCategory = 'ALL' | 'SAM' | 'AAA' | 'SHIP' | 'AIR' | 'SR';
 
 export default function App() {
   const [selectedThreat, setSelectedThreat] = useState<Threat | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('ALL');
-  
+
   // 🔥 Neue States für die Suchfunktion
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
@@ -24,30 +24,51 @@ export default function App() {
 
   const closeMfd = () => {
     setModalVisible(false);
-    setTimeout(() => setSelectedThreat(null), 300); 
+    setTimeout(() => setSelectedThreat(null), 300);
   };
 
   // 🔥 Die Filter-Logik kombiniert jetzt Kategorie-Button UND Sucheintrag
-  const filteredThreats = fa18cThreats.filter(t => {
-    // 1. Passt die Kategorie?
-    const matchesCategory = activeFilter === 'ALL' || t.category === activeFilter;
-    
-    // 2. Passt der Suchbegriff? (Sucht in RWR, Name und HARM-Code)
-    const query = searchQuery.toLowerCase();
-    const matchesSearch = query === '' || 
-                          t.rwrSymbol.toLowerCase().includes(query) ||
-                          t.name.toLowerCase().includes(query) ||
-                          (t.harmCode && t.harmCode.toLowerCase().includes(query));
-                          
-    return matchesCategory && matchesSearch;
-  });
+  // 🔥 Die kombinierte Filter- und Sortier-Logik
+  const filteredAndSortedThreats = fa18cThreats
+    .filter(t => {
+      // 1. Kategorie-Filter
+      const matchesCategory = activeFilter === 'ALL' || t.category === activeFilter;
 
-  const categories: FilterCategory[] = ['ALL', 'SAM', 'AIR', 'SHIP', 'AAA'];
+      // 2. Suchbegriff-Filter (RWR, Name, HARM)
+      const query = searchQuery.toLowerCase();
+      const matchesSearch = query === '' ||
+        t.rwrSymbol.toLowerCase().includes(query) ||
+        t.name.toLowerCase().includes(query) ||
+        (t.harmCode && t.harmCode.toLowerCase().includes(query));
+
+      return matchesCategory && matchesSearch;
+    })
+    .sort((a, b) => {
+      // Prüfen, ob die Symbole reine Zahlen sind
+      const aNum = parseInt(a.rwrSymbol, 10);
+      const bNum = parseInt(b.rwrSymbol, 10);
+      const aIsPureNum = !isNaN(aNum) && /^\d+$/.test(a.rwrSymbol);
+      const bIsPureNum = !isNaN(bNum) && /^\d+$/.test(b.rwrSymbol);
+
+      // 1. Fall: Beide sind reine Zahlen -> Numerisch sortieren
+      if (aIsPureNum && bIsPureNum) {
+        return aNum - bNum;
+      }
+
+      // 2. Fall: Nur einer ist eine Zahl -> Zahl kommt zuerst
+      if (aIsPureNum && !bIsPureNum) return -1;
+      if (!aIsPureNum && bIsPureNum) return 1;
+
+      // 3. Fall: Beide sind Buchstaben (oder Mix wie "E2") -> Alphabetisch sortieren
+      return a.rwrSymbol.localeCompare(b.rwrSymbol);
+    });
+
+  const categories: FilterCategory[] = ['ALL', 'SAM', 'SR', 'AIR', 'SHIP', 'AAA'];
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
-      
+
       <View style={styles.headerConsole}>
         <Text style={styles.glitchText}>[ RWR DATABASE ]</Text>
         <Text style={styles.subText}>SYSTEM ONLINE ...</Text>
@@ -58,7 +79,7 @@ export default function App() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScroll}>
           {categories.map(cat => (
             <View key={cat} style={styles.osbGroup}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.osbHardwareBtn, activeFilter === cat && styles.osbHardwareBtnActive]}
                 onPress={() => setActiveFilter(cat)}
                 activeOpacity={0.7}
@@ -73,7 +94,7 @@ export default function App() {
       </View>
 
       <View style={styles.radarScreen}>
-        
+
         {/* 🔥 Taktisches Such-Overlay oben rechts */}
         <View style={styles.sideSearchContainer}>
           {isSearchActive && (
@@ -84,20 +105,20 @@ export default function App() {
               placeholder="TARGET..."
               placeholderTextColor="#005500"
               autoCapitalize="characters"
-              autoFocus={true} 
+              autoFocus={true}
             />
           )}
-          <TouchableOpacity 
-            style={[styles.rightEdgeBtn, isSearchActive && styles.rightEdgeBtnActive]} 
+          <TouchableOpacity
+            style={[styles.rightEdgeBtn, isSearchActive && styles.rightEdgeBtnActive]}
             onPress={() => {
               setIsSearchActive(!isSearchActive);
-              if (isSearchActive) setSearchQuery(''); 
+              if (isSearchActive) setSearchQuery('');
             }}
           >
             {/* Wir splitten den Text auf und rendern jeden Buchstaben untereinander */}
             {(isSearchActive ? ['⊓', 'X', '⊔'] : ['⊓', 'S', 'R', 'C', 'H', '⊔']).map((char, index) => (
-              <Text 
-                key={index} 
+              <Text
+                key={index}
                 style={[styles.verticalChar, isSearchActive && styles.verticalCharActive]}
               >
                 {char}
@@ -106,13 +127,17 @@ export default function App() {
           </TouchableOpacity>
         </View>
 
-        <RwrGrid threats={filteredThreats} onThreatSelect={handleThreatSelect} />
+        <RwrGrid
+          threats={filteredAndSortedThreats} // <-- Hier die sortierte Liste übergeben
+          onThreatSelect={handleThreatSelect}
+          />
       </View>
 
-      <ThreatModal 
-        threat={selectedThreat} 
-        visible={modalVisible} 
-        onClose={closeMfd} 
+      <ThreatModal
+        threat={selectedThreat}
+        visible={modalVisible}
+        onClose={closeMfd}
+        onNavigate={handleThreatSelect}
       />
     </SafeAreaView>
   );
@@ -121,7 +146,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000', 
+    backgroundColor: '#000000',
     paddingTop: 40,
   },
   headerConsole: {
@@ -152,10 +177,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     letterSpacing: 1,
   },
-  
+
   /* --- OSB STYLES --- */
   mfdBezel: {
-    backgroundColor: '#111', 
+    backgroundColor: '#111',
     borderBottomWidth: 2,
     borderBottomColor: '#222',
     zIndex: 1, // Stellt sicher, dass die Suche nicht drunter rutscht
@@ -173,15 +198,15 @@ const styles = StyleSheet.create({
   osbHardwareBtn: {
     width: 45,
     height: 25,
-    backgroundColor: '#333', 
+    backgroundColor: '#333',
     borderWidth: 2,
     borderColor: '#111',
-    borderBottomWidth: 4, 
+    borderBottomWidth: 4,
     borderRadius: 4,
   },
   osbHardwareBtnActive: {
-    borderBottomWidth: 1, 
-    transform: [{ translateY: 3 }], 
+    borderBottomWidth: 1,
+    transform: [{ translateY: 3 }],
     backgroundColor: '#444',
   },
   osbConnector: {
@@ -197,7 +222,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   osbScreenText: {
-    color: '#005500', 
+    color: '#005500',
     fontFamily: 'monospace',
     fontSize: 16,
     fontWeight: 'bold',
@@ -205,7 +230,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   osbScreenTextActive: {
-    color: '#39FF14', 
+    color: '#39FF14',
     textShadowColor: '#39FF14',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
