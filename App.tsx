@@ -7,9 +7,10 @@ import RwrGrid from './RwrGrid';
 import ThreatModal from './ThreatModal';
 import TargetIndex from './GroundTargetIndex';
 import { fa18cThreats, Threat } from './threatData';
+import CommsLink from './CommsLink';
 
 type FilterCategory = 'ALL' | 'SAM' | 'AAA' | 'SHIP' | 'AIR' | 'SR';
-type MfdPage = 'RWR_DATABASE' | 'TARGET_INDEX';
+type MfdPage = 'RWR_DATABASE' | 'TARGET_INDEX' | 'COMMS_LINK';
 
 export default function App() {
   useKeepAwake();
@@ -19,9 +20,12 @@ export default function App() {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('ALL');
   const touchStartX = useRef(0);
 
-  // Neue Suchfunktion
+  // Suchfunktion
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
+ // CommsLink IP
+  const [commsIp, setCommsIp] = useState('192.168.');
+  const [isCommsLinked, setIsCommsLinked] = useState(false);
 
   const handleThreatSelect = (threat: Threat) => {
     setSelectedThreat(threat);
@@ -35,7 +39,11 @@ export default function App() {
 
   //Funktion zum Wechseln der MFD Seiten
   const toggleMfdPage = () => {
-    setActiveApp(prev => prev === 'RWR_DATABASE' ? 'TARGET_INDEX' : 'RWR_DATABASE');
+    setActiveApp(prev => {
+      if (prev === 'RWR_DATABASE') return 'TARGET_INDEX';
+      if (prev === 'TARGET_INDEX') return 'COMMS_LINK';
+      return 'RWR_DATABASE';
+    });
   };
 
   // Die kombinierte Filter- und Sortier-Logik
@@ -99,7 +107,9 @@ export default function App() {
           </TouchableOpacity>
           
           <Text style={styles.glitchText}>
-            {activeApp === 'RWR_DATABASE' ? '[ RWR DATABASE ]' : '[ TARGET INDEX ]'}
+            {activeApp === 'RWR_DATABASE' && '[ RWR DATABASE ]'}
+            {activeApp === 'TARGET_INDEX' && '[ TARGET INDEX ]'}
+            {activeApp === 'COMMS_LINK' && '[ COMMS LINK ]'}
           </Text>
 
           <TouchableOpacity onPress={toggleMfdPage} hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}>
@@ -109,8 +119,8 @@ export default function App() {
         <Text style={styles.subText}>SYSTEM ONLINE ... SWIPE TITLE TO SWITCH</Text>
       </View>
 
-      {/* 🔥 NEU: Hier weicheln wir zwischen RWR und TARGET INDEX */}
-      {activeApp === 'RWR_DATABASE' ? (
+      {/* WECHSEL zwischen den Seiten*/}
+      {activeApp === 'RWR_DATABASE' && (
         <>
           {/* Deine OSB-Leiste */}
           <View style={styles.mfdBezel}>
@@ -161,9 +171,16 @@ export default function App() {
             <RwrGrid threats={filteredAndSortedThreats} onThreatSelect={handleThreatSelect} />
           </View>
         </>
-      ) : (
-        /* 🔥 Wenn TARGET_INDEX aktiv ist, blenden wir die OSB-Leiste und das Grid aus und zeigen die PDF-Bilder */
-        <TargetIndex />
+      )}
+      {activeApp === 'TARGET_INDEX' && <TargetIndex />}
+      
+      {activeApp === 'COMMS_LINK' && (
+        <CommsLink 
+          ipAddress={commsIp} 
+          setIpAddress={setCommsIp} 
+          isLinked={isCommsLinked} 
+          setIsLinked={setIsCommsLinked} 
+        />
       )}
 
       <ThreatModal threat={selectedThreat} visible={modalVisible} onClose={closeMfd} onNavigate={handleThreatSelect} />
