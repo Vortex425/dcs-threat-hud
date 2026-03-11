@@ -26,15 +26,26 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
 
   const handleMacroPress = async (macroName: string) => {
     console.log(`[UPLINK] Initiating transmission: ${macroName} to ${ipAddress}...`);
+
+    // 🔥 NEU: Der React-Native kompatible Timeout-Zünder
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // Bricht nach 2 Sekunden ab
+
     try {
       const response = await fetch(`http://${ipAddress}:7777/${macroName}`, {
         method: 'GET',
-        signal: AbortSignal.timeout(2000) 
+        signal: controller.signal // Verbindet den Fetch mit unserem Controller
       });
+      
+      // Wenn die Anfrage erfolgreich war, entschärfen wir den Timer
+      clearTimeout(timeoutId);
+
       if (response.ok) {
         console.log(`[UPLINK] ${macroName} SUCCESSFUL.`);
       }
     } catch (error) {
+      // Auch bei einem Fehler müssen wir den Timer stoppen
+      clearTimeout(timeoutId);
       console.error(`[UPLINK] FAILED:`, error);
       Alert.alert('TRANSMISSION FAILED', 'Could not reach DCS. Check IP and Export.lua.');
     }
