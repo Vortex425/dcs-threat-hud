@@ -6,7 +6,7 @@ const { width } = Dimensions.get('window');
 
 
 const pdfPages = [
-  require('./assets/groundtraget/Walriders_Target_Index-1_page-0001.png'), // Beispiel-Pfade!
+  require('./assets/groundtraget/Walriders_Target_Index-1_page-0001.png'),
   require('./assets/groundtraget/Walriders_Target_Index-1_page-0002.png'),
   require('./assets/groundtraget/Walriders_Target_Index-1_page-0003.png'),
   require('./assets/groundtraget/Walriders_Target_Index-1_page-0004.png'),

@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { useKeepAwake } from 'expo-keep-awake';
 import RwrGrid from './RwrGrid';
 import ThreatModal from './ThreatModal';
 import TargetIndex from './GroundTargetIndex';
@@ -11,6 +12,7 @@ type FilterCategory = 'ALL' | 'SAM' | 'AAA' | 'SHIP' | 'AIR' | 'SR';
 type MfdPage = 'RWR_DATABASE' | 'TARGET_INDEX';
 
 export default function App() {
+  useKeepAwake();
   const [activeApp, setActiveApp] = useState<MfdPage>('RWR_DATABASE');
   const [selectedThreat, setSelectedThreat] = useState<Threat | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
