@@ -53,6 +53,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
       clearTimeout(timeoutId);
       console.error(`[UPLINK] FAILED:`, error);
       Alert.alert('TRANSMISSION FAILED', 'Could not reach DCS. Check IP and Export.lua.');
+      Alert.alert('TRANSMISSION FAILED', `${error instanceof Error ? error.message : String(error)}`);
     }
   };
 
