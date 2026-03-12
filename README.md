@@ -1,3 +1,11 @@
+
+
+ # Disclaimer
+ **This Project is made with the use of AI and a bit of my brain...**
+
+
+---
+
 # 🚀 DCS Tactical MFD & Comms Link
 
 Eine modulare, interaktive Kniebrett- und Companion-App für **DCS World**, gebaut mit React Native (Expo). 

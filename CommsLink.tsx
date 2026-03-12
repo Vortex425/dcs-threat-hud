@@ -1,8 +1,8 @@
-// 🚀 CommsLink.tsx - Das taktische Macro-Interface
+// CommsLink.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, Modal } from 'react-native';
 
-// 🔥 NEU: Wir definieren, welche Daten die App.tsx uns übergeben muss
+// definiert, welche Daten die App.tsx uns übergeben muss
 interface Props {
   ipAddress: string;
   setIpAddress: (ip: string) => void;
@@ -10,7 +10,6 @@ interface Props {
   setIsLinked: (linked: boolean) => void;
 }
 
-// 🔥 NEU: Die Props in die Klammern einfügen
 export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLinked }: Props) {
   
   // Die IP und isLinked sind hier jetzt weg! Nur der Guide bleibt lokal.
@@ -37,7 +36,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
         signal: controller.signal // Verbindet den Fetch mit unserem Controller
       });
       
-      // Wenn die Anfrage erfolgreich war, entschärfen wir den Timer
+      // Wenn die Anfrage erfolgreich war, Timer entschärfen
       clearTimeout(timeoutId);
 
       if (response.ok) {
@@ -84,7 +83,6 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
           </TouchableOpacity>
         </View>
 
-        {/* 🔥 NEU: Angepasstes Installations-Modal (Ohne Download-Button) */}
         <Modal transparent={true} visible={showGuide} animationType="slide">
           <View style={styles.modalOverlay}>
             <View style={styles.guideModal}>
@@ -94,8 +92,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
                 <Text style={styles.guideStepTitle}>STEP 1: GET SCRIPT</Text>
                 <Text style={styles.guideText}>On your DCS PC, open a browser and go to:</Text>
                 <View style={styles.codeBlock}>
-                  {/* 🔥 HIER TRÄGST DU DEINEN KURZLINK EIN */}
-                  <Text style={styles.codeTextHighlight}>github.com/DEIN_NAME/REPO</Text>
+                  <Text style={styles.codeTextHighlight}>github.com/Vortex425/dcs-threat-hud/blob/master/DCS_Uplink.lua</Text>
                 </View>
                 <Text style={styles.guideText}>Download the "DCS_Uplink.lua" file.</Text>
 
@@ -239,7 +236,7 @@ const styles = StyleSheet.create({
   guideStepTitle: { color: '#39FF14', fontFamily: 'monospace', fontSize: 16, fontWeight: 'bold', marginTop: 15, marginBottom: 5 },
   guideText: { color: '#008855', fontFamily: 'monospace', fontSize: 14, lineHeight: 20 },
   codeBlock: { backgroundColor: '#000000', borderWidth: 1, borderColor: '#005500', padding: 10, marginVertical: 10 },
-  codeText: { color: '#FFA500', fontFamily: 'monospace', fontSize: 10 },
+  codeText: { color: '#FFA500', fontFamily: 'monospace', fontSize: 8.8 },
   codeTextHighlight: { color: '#39FF14', fontFamily: 'monospace', fontSize: 16, fontWeight: 'bold', textAlign: 'center' },
   closeGuideBtn: { alignSelf: 'center', padding: 10, marginTop: 10, borderTopWidth: 1, borderTopColor: '#005500', width: '100%', alignItems: 'center' },
   closeGuideText: { color: '#39FF14', fontFamily: 'monospace', fontSize: 16, fontWeight: 'bold' },
