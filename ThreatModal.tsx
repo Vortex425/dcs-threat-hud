@@ -1,4 +1,5 @@
-// 🎯 Vibe: MFD Tactical Readout - Mit Hyperlinks & Blue-Bugfix
+// ThreatModal.tsx - Tactical Readout Display
+// Renders a modal overlay displaying detailed information about a selected RWR threat, including associated system hyperlinks.
 import React, { useEffect, useRef } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated, Image, ScrollView } from 'react-native';
 import { Threat, fa18cThreats } from './threatData';
@@ -7,17 +8,22 @@ interface Props {
   threat: Threat | null;
   visible: boolean;
   onClose: () => void;
-  onNavigate: (threat: Threat) => void; // 🔥 NEU: Erlaubt das Springen zu anderen Threats
+  // Callback function to allow navigation (jumping) directly to an associated threat
+  onNavigate: (threat: Threat) => void; 
 }
 
+// Utility function to format raw altitude strings into readable formats
 const formatAltitude = (altStr: string) => {
   if (altStr === '++' || altStr === '+') return '> 50.000';
   if (altStr === 'N/A' || !altStr) return 'N/A';
+  
   const parsedAlt = parseInt(altStr, 10);
-  if (!isNaN(parsedAlt)) return (parsedAlt * 1000).toLocaleString('de-DE');
+  if (!isNaN(parsedAlt)) return (parsedAlt * 1000).toLocaleString('en-US');
+  
   return altStr;
 };
 
+// Returns a specific UI color based on the recommended countermeasure type
 const getCmColor = (cm: string) => {
   switch (cm) {
     case 'Chaff': return '#00BFFF'; 
@@ -27,6 +33,7 @@ const getCmColor = (cm: string) => {
   }
 };
 
+// Determines the header text color and blink rate based on the threat level
 const getThreatLevelColor = (level?: string) => {
   switch (level) {
     case 'Low': return '#39FF14';    
@@ -38,25 +45,28 @@ const getThreatLevelColor = (level?: string) => {
 };
 
 export default function ThreatModal({ threat, visible, onClose, onNavigate }: Props) {
+  // Animated value used to control the blinking effect of the threat header
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Wenn das Modal zu ist, Animation zurücksetzen
+    // Reset the animation state if the modal is closed or no threat is selected
     if (!visible || !threat) {
       fadeAnim.setValue(1);
       return;
     }
 
-    // 🔥 BUGFIX: Bei 'Blue' gar nicht erst den Loop starten, sondern statisch auf 1 (sichtbar) setzen
+    // Static display for friendly ('Blue') units; no blinking required
     if (threat.threatLevel === 'Blue') {
       fadeAnim.setValue(1);
       return;
     }
 
-    let duration = 200; 
+    // Determine blink frequency based on the severity of the threat
+    let duration = 200; // High threat (fast blink)
     if (threat.threatLevel === 'Medium') duration = 500; 
     if (threat.threatLevel === 'Low') duration = 1000;   
 
+    // Start the continuous fading animation loop
     Animated.loop(
       Animated.sequence([
         Animated.timing(fadeAnim, { toValue: 0.2, duration: duration, useNativeDriver: true }),
@@ -66,6 +76,7 @@ export default function ThreatModal({ threat, visible, onClose, onNavigate }: Pr
 
   }, [visible, threat, fadeAnim]);
 
+  // Prevent rendering if no threat data is passed
   if (!threat) return null;
 
   const headerColor = getThreatLevelColor(threat.threatLevel);
@@ -75,6 +86,7 @@ export default function ThreatModal({ threat, visible, onClose, onNavigate }: Pr
       <View style={styles.overlay}>
         <View style={styles.mfdScreen}>
 
+          {/* Animated Header */}
           <Animated.Text style={[styles.warningHeader, { opacity: fadeAnim, color: headerColor }]}>
             <Text style={{ color: headerColor }}>[!]</Text> THREAT LEVEL: {threat.threatLevel.toUpperCase()}
           </Animated.Text>
@@ -87,6 +99,8 @@ export default function ThreatModal({ threat, visible, onClose, onNavigate }: Pr
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.dataBlock}>
+              
+              {/* Threat Image Display */}
               {threat.image ? (
                 <View style={styles.imageContainer}>
                   <Image source={threat.image} style={styles.threatImage} resizeMode="cover" />
@@ -97,6 +111,7 @@ export default function ThreatModal({ threat, visible, onClose, onNavigate }: Pr
                 </View>
               )}
 
+              {/* Core Threat Data */}
               <Text style={styles.infoLine}>SYS:  {threat.name}</Text>
               <Text style={styles.infoLine}>TYPE: {threat.category}</Text>
               <Text style={styles.infoLine}>RNG:  {threat.maxRangeNm} NM</Text>
@@ -106,20 +121,21 @@ export default function ThreatModal({ threat, visible, onClose, onNavigate }: Pr
                 CM:   <Text style={{ color: getCmColor(threat.countermeasure) }}>{threat.countermeasure}</Text>
               </Text>
 
+              {/* Associated Systems (Hyperlinks) */}
               {threat.linkedSystems && threat.linkedSystems.length > 0 && (
                 <View style={styles.linkContainer}>
                   <Text style={styles.linkTitle}>ASSOCIATED SYSTEMS:</Text>
                   {threat.linkedSystems.map((symbol, idx) => {
+                    // Find the associated threat object in the database using its RWR symbol
                     const linkedThreat = fa18cThreats.find(t => t.rwrSymbol === symbol);
                     if (!linkedThreat) return null;
 
                     return (
-                      // 🔥 NEU: TouchableOpacity macht die Zeile klickbar und nutzt onNavigate
                       <TouchableOpacity 
                         key={idx} 
                         style={styles.linkRow}
                         onPress={() => onNavigate(linkedThreat)}
-                        activeOpacity={0.6} // Leichtes Feedback beim Antippen
+                        activeOpacity={0.6}
                       >
                         <View style={styles.linkSymbolCircle}>
                           <Text style={styles.linkSymbolText}>{linkedThreat.rwrSymbol}</Text>
@@ -131,6 +147,7 @@ export default function ThreatModal({ threat, visible, onClose, onNavigate }: Pr
                 </View>
               )}
 
+              {/* HARM Code Display */}
               <View style={styles.harmBlock}>
                 <Text style={styles.harmText}>HARM CODE: {threat.harmCode}</Text>
               </View>
@@ -138,6 +155,7 @@ export default function ThreatModal({ threat, visible, onClose, onNavigate }: Pr
             </View>
           </ScrollView>
 
+          {/* Close Button */}
           <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
             <Text style={styles.closeText}>[ BREAK LOCK ]</Text>
           </TouchableOpacity>
@@ -149,18 +167,71 @@ export default function ThreatModal({ threat, visible, onClose, onNavigate }: Pr
 }
 
 const styles = StyleSheet.create({
-  // Hier bleiben deine bestehenden Styles exakt so erhalten, wie sie waren!
-  overlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.85)', justifyContent: 'center', alignItems: 'center' },
-  mfdScreen: { width: '85%', maxHeight: '85%', backgroundColor: '#001100', borderWidth: 2, borderColor: '#39FF14', padding: 20, shadowColor: '#39FF14', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.5, shadowRadius: 15, elevation: 10 },
-  warningHeader: { color: '#FF003C', fontFamily: 'monospace', fontSize: 19, fontWeight: 'bold', marginBottom: 10 },
-  blink: { color: '#FF003C' },
-  divider: { height: 2, backgroundColor: '#005500', marginBottom: 15 },
-  dataBlock: { marginBottom: 20 },
-  infoLine: { color: '#39FF14', fontFamily: 'monospace', fontSize: 16, marginVertical: 4, letterSpacing: 1 },
-  harmBlock: { marginTop: 15, padding: 10, borderWidth: 1, borderColor: '#39FF14', backgroundColor: 'rgba(57, 255, 20, 0.1)' },
-  harmText: { color: '#39FF14', fontFamily: 'monospace', fontSize: 18, fontWeight: 'bold', textAlign: 'center' },
-  closeBtn: { alignSelf: 'center', padding: 10 },
-  closeText: { color: '#005500', fontFamily: 'monospace', fontSize: 16, fontWeight: 'bold' },
+  overlay: { 
+    flex: 1, 
+    backgroundColor: 'rgba(0, 0, 0, 0.85)', 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  mfdScreen: { 
+    width: '85%', 
+    maxHeight: '85%', 
+    backgroundColor: '#001100', 
+    borderWidth: 2, 
+    borderColor: '#39FF14', 
+    padding: 20, 
+    shadowColor: '#39FF14', 
+    shadowOffset: { width: 0, height: 0 }, 
+    shadowOpacity: 0.5, 
+    shadowRadius: 15, 
+    elevation: 10 
+  },
+  warningHeader: { 
+    color: '#FF003C', 
+    fontFamily: 'monospace', 
+    fontSize: 19, 
+    fontWeight: 'bold', 
+    marginBottom: 10 
+  },
+  divider: { 
+    height: 2, 
+    backgroundColor: '#005500', 
+    marginBottom: 15 
+  },
+  dataBlock: { 
+    marginBottom: 20 
+  },
+  infoLine: { 
+    color: '#39FF14', 
+    fontFamily: 'monospace', 
+    fontSize: 16, 
+    marginVertical: 4, 
+    letterSpacing: 1 
+  },
+  harmBlock: { 
+    marginTop: 15, 
+    padding: 10, 
+    borderWidth: 1, 
+    borderColor: '#39FF14', 
+    backgroundColor: 'rgba(57, 255, 20, 0.1)' 
+  },
+  harmText: { 
+    color: '#39FF14', 
+    fontFamily: 'monospace', 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    textAlign: 'center' 
+  },
+  closeBtn: { 
+    alignSelf: 'center', 
+    padding: 10 
+  },
+  closeText: { 
+    color: '#005500', 
+    fontFamily: 'monospace', 
+    fontSize: 16, 
+    fontWeight: 'bold' 
+  },
   scrollArea: {
     flexShrink: 1,
     width: '100%',

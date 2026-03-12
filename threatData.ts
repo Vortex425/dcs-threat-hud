@@ -1,12 +1,13 @@
-// threatData.ts - RWR Daten
+// threatData.ts - Radar Warning Receiver (RWR) Threat Database
+// Serves as the single source of truth for threat profiles, providing data for the RWR Grid and Threat Details Modal.
 
 export interface Threat {
   id: string;
   rwrSymbol: string;
   name: string;
   category: 'SAM' | 'AAA' | 'SHIP' | 'AIR' | 'SR';
-  maxRangeNm: string; // Als String, wegen Werten wie "48/++"
-  maxAltFt: string;   // Als String, wegen Werten wie "++" oder "20"
+  maxRangeNm: string; // Stored as a string to accommodate special values like "48/++"
+  maxAltFt: string;   // Stored as a string to accommodate special values like "++" (unlimited) or "20"
   countermeasure: 'Chaff' | 'Flares' | 'Evade';
   harmCode: string;
   image?: any;
@@ -15,13 +16,16 @@ export interface Threat {
 }
 
 export const fa18cThreats: Threat[] = [
+  // ==========================================
+  //     SAM (Surface-to-Air Missiles)
+  // ==========================================
   {
     id: "sa-10",
     rwrSymbol: "10",
     name: "SA-10 Grumble S-300PS",
     category: "SAM",
     maxRangeNm: "48",
-    maxAltFt: "++",      // > 50.000ft
+    maxAltFt: "++",      // > 50,000 ft
     countermeasure: "Chaff",
     harmCode: "110",
     image: require('./assets/threats/SA-10Launcher.png'),
@@ -34,7 +38,7 @@ export const fa18cThreats: Threat[] = [
     name: "SA-15 Gauntlet Tor",
     category: "SAM",
     maxRangeNm: "09",
-    maxAltFt: "20",      // 20.000ft
+    maxAltFt: "20",      
     countermeasure: "Chaff",
     harmCode: "119",
     image: require('./assets/threats/SA-15.png'),
@@ -76,7 +80,7 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Chaff",
     harmCode: "123",
     image: require('./assets/threats/SA-3Launcher.png'),
-    linkedSystems:["S"],
+    linkedSystems: ["S"],
     threatLevel: 'Medium',
   },
   {
@@ -89,7 +93,7 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Chaff",
     harmCode: "129",
     image: require('./assets/threats/SA-5Launcher.png'),
-    linkedSystems: ["S","TS"],
+    linkedSystems: ["S", "TS"],
     threatLevel: 'High',
   },
   {
@@ -151,7 +155,7 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Flares",
     harmCode: "118",
     image: require('./assets/threats/SA-13.png'),
-    linkedSystems:  ["DE"],
+    linkedSystems: ["DE"],
     threatLevel: 'Low',
   },
   {
@@ -228,7 +232,7 @@ export const fa18cThreats: Threat[] = [
   },
 
   // ==========================================
-  //     NAVAL (Schiffe & Trägergruppen)
+  //     NAVAL (Ships & Carrier Strike Groups)
   // ==========================================
   {
     id: "ship-tor-m2",
@@ -328,17 +332,17 @@ export const fa18cThreats: Threat[] = [
   },
 
   // ==========================================
-  //          AAA (Flak & SPAAA)
+  //          AAA (Anti-Aircraft Artillery)
   // ==========================================
   {
-    "id": "aaa-composite-threat",
-    "rwrSymbol": "A",
-    "name": "Composite AAA Threat (Gepard/Shilka/Vulcan)",
-    "category": "AAA",
-    "maxRangeNm": "03",
-    "maxAltFt": "10",
-    "countermeasure": "Evade",
-    "harmCode": "207/121/208",
+    id: "aaa-composite-threat",
+    rwrSymbol: "A",
+    name: "Composite AAA Threat (Gepard/Shilka/Vulcan)",
+    category: "AAA",
+    maxRangeNm: "03",
+    maxAltFt: "10",
+    countermeasure: "Evade",
+    harmCode: "207/121/208",
     image: require('./assets/threats/Shilka.png'),
     threatLevel: 'Low',
   },
@@ -395,14 +399,14 @@ export const fa18cThreats: Threat[] = [
     threatLevel: 'High',
   },
   {
-    "id": "air-mig29-su27-j11",
-    "rwrSymbol": "29",
-    "name": "MiG-29/Su-27/Su-33/J-11A",
-    "category": "AIR",
-    "maxRangeNm": "38",
-    "maxAltFt": "N/A",
-    "countermeasure": "Evade",
-    "harmCode": "N/A",
+    id: "air-mig29-su27-j11",
+    rwrSymbol: "29",
+    name: "MiG-29/Su-27/Su-33/J-11A",
+    category: "AIR",
+    maxRangeNm: "38",
+    maxAltFt: "N/A",
+    countermeasure: "Evade",
+    harmCode: "N/A",
     image: require('./assets/threats/MiG-29.png'),
     threatLevel: 'High',
   },
@@ -468,7 +472,7 @@ export const fa18cThreats: Threat[] = [
   },
 
   // ==========================================
-  // Search and Track Radars
+  //     SR (Search and Track Radars)
   // ==========================================
   {
     id: "sr-flat-face",
@@ -545,7 +549,7 @@ export const fa18cThreats: Threat[] = [
     countermeasure: "Evade",
     harmCode: "130",
     image: require('./assets/threats/TinShield.png'),
-    linkedSystems:["5", "10"],
+    linkedSystems: ["5", "10"],
     threatLevel: 'High',
   }
 ];

@@ -1,4 +1,4 @@
-// 🚀 App.tsx - Unser Main Terminal (Mit OSB Hardware Buttons & Suche)
+// App.tsx - Main Application Terminal (OSB Interface & Navigation Routing)
 import { useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, TextInput } from 'react-native';
@@ -14,16 +14,21 @@ type MfdPage = 'RWR_DATABASE' | 'TARGET_INDEX' | 'COMMS_LINK';
 
 export default function App() {
   useKeepAwake();
+  
+  // Navigation & UI State
   const [activeApp, setActiveApp] = useState<MfdPage>('RWR_DATABASE');
   const [selectedThreat, setSelectedThreat] = useState<Threat | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('ALL');
+  
+  // Swipe Gesture Tracking
   const touchStartX = useRef(0);
 
-  // Suchfunktion
+  // Search State
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
- // CommsLink IP
+  
+  // CommsLink Network State
   const [commsIp, setCommsIp] = useState('192.168.');
   const [isCommsLinked, setIsCommsLinked] = useState(false);
 
@@ -34,10 +39,11 @@ export default function App() {
 
   const closeMfd = () => {
     setModalVisible(false);
+    // Delay clearing the selected threat to allow the modal close animation to finish
     setTimeout(() => setSelectedThreat(null), 300);
   };
 
-  //Funktion zum Wechseln der MFD Seiten
+  // Cycles through available MFD pages
   const toggleMfdPage = () => {
     setActiveApp(prev => {
       if (prev === 'RWR_DATABASE') return 'TARGET_INDEX';
@@ -46,13 +52,13 @@ export default function App() {
     });
   };
 
-  // Die kombinierte Filter- und Sortier-Logik
+  // Combined filtering and sorting logic for threat data
   const filteredAndSortedThreats = fa18cThreats
     .filter(t => {
-      // 1. Kategorie-Filter
+      // 1. Filter by category
       const matchesCategory = activeFilter === 'ALL' || t.category === activeFilter;
 
-      // 2. Suchbegriff-Filter (RWR, Name, HARM)
+      // 2. Filter by search query (checks RWR symbol, Name, and HARM code)
       const query = searchQuery.toLowerCase();
       const matchesSearch = query === '' ||
         t.rwrSymbol.toLowerCase().includes(query) ||
@@ -62,22 +68,22 @@ export default function App() {
       return matchesCategory && matchesSearch;
     })
     .sort((a, b) => {
-      // Prüfen, ob die Symbole reine Zahlen sind
+      // Check if symbols are strictly numeric for proper sorting order
       const aNum = parseInt(a.rwrSymbol, 10);
       const bNum = parseInt(b.rwrSymbol, 10);
       const aIsPureNum = !isNaN(aNum) && /^\d+$/.test(a.rwrSymbol);
       const bIsPureNum = !isNaN(bNum) && /^\d+$/.test(b.rwrSymbol);
 
-      // 1. Fall: Beide sind reine Zahlen -> Numerisch sortieren
+      // Case 1: Both are pure numbers -> Sort numerically ascending
       if (aIsPureNum && bIsPureNum) {
         return aNum - bNum;
       }
 
-      // 2. Fall: Nur einer ist eine Zahl -> Zahl kommt zuerst
+      // Case 2: Mixed types -> Numbers take precedence over letters
       if (aIsPureNum && !bIsPureNum) return -1;
       if (!aIsPureNum && bIsPureNum) return 1;
 
-      // 3. Fall: Beide sind Buchstaben (oder Mix wie "E2") -> Alphabetisch sortieren
+      // Case 3: Both are alphanumeric (or mixed like "E2") -> Sort alphabetically
       return a.rwrSymbol.localeCompare(b.rwrSymbol);
     });
 
@@ -87,16 +93,16 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
 
-      {/* 🔥 NEU: Der interaktive Header mit Swipe-Erkennung und Pfeilen */}
+      {/* Interactive header with swipe gesture recognition and navigation arrows */}
       <View 
         style={styles.headerConsole}
         onTouchStart={(e) => {
-          touchStartX.current = e.nativeEvent.pageX; // <-- .current nutzen
+          touchStartX.current = e.nativeEvent.pageX;
         }}
         onTouchEnd={(e) => {
           const touchEndX = e.nativeEvent.pageX;
-          // Prüfen, ob mehr als 50 Pixel gewischt wurde
-          if (Math.abs(touchEndX - touchStartX.current) > 50) { // <-- .current nutzen
+          // Trigger page toggle if horizontal swipe distance exceeds 50 pixels
+          if (Math.abs(touchEndX - touchStartX.current) > 50) {
             toggleMfdPage();
           }
         }}
@@ -119,10 +125,10 @@ export default function App() {
         <Text style={styles.subText}>SYSTEM ONLINE ... SWIPE TITLE TO SWITCH</Text>
       </View>
 
-      {/* WECHSEL zwischen den Seiten*/}
+      {/* MFD Page Routing */}
       {activeApp === 'RWR_DATABASE' && (
         <>
-          {/* Deine OSB-Leiste */}
+          {/* OSB (Option Select Button) Hardware Bezel */}
           <View style={styles.mfdBezel}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScroll}>
               {categories.map(cat => (
@@ -141,7 +147,7 @@ export default function App() {
             </ScrollView>
           </View>
 
-          {/* Dein Radar Screen */}
+          {/* RWR Grid Display & Search Overlay */}
           <View style={styles.radarScreen}>
             <View style={styles.sideSearchContainer}>
               {isSearchActive && (
@@ -172,6 +178,7 @@ export default function App() {
           </View>
         </>
       )}
+
       {activeApp === 'TARGET_INDEX' && <TargetIndex />}
       
       {activeApp === 'COMMS_LINK' && (
@@ -203,7 +210,7 @@ const styles = StyleSheet.create({
   radarScreen: {
     flex: 1,
     justifyContent: 'center',
-    position: 'relative', // Wichtig, damit das Such-Overlay absolut darin platziert werden kann
+    position: 'relative', 
   },
   glitchText: {
     color: '#39FF14',
@@ -219,10 +226,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 15, // Abstand zwischen Pfeilen und Titel
+    gap: 15,
   },
   navArrow: {
-    color: '#005500', // Etwas dunkler als der Haupttitel, damit es subtil bleibt
+    color: '#005500',
     fontFamily: 'monospace',
     fontSize: 28,
     fontWeight: 'bold',
@@ -235,12 +242,12 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 
-  /* --- OSB STYLES --- */
+  /* --- OSB BEZEL STYLES --- */
   mfdBezel: {
     backgroundColor: '#111',
     borderBottomWidth: 2,
     borderBottomColor: '#222',
-    zIndex: 1, // Stellt sicher, dass die Suche nicht drunter rutscht
+    zIndex: 1, 
   },
   filterScroll: {
     paddingHorizontal: 20,
@@ -293,15 +300,14 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
   },
 
-  /* --- NEU: SEARCH OVERLAY STYLES --- */
-  /* --- NEU: VERTICAL SIDE-BUTTON STYLES --- */
+  /* --- SEARCH OVERLAY STYLES --- */
   sideSearchContainer: {
     position: 'absolute',
-    right: 0,       // Klebt ganz am rechten Rand
-    top: 30,        // Zieht den Button etwas nach unten, weg von den oberen Filtern
+    right: 0,       
+    top: 30,        
     flexDirection: 'row',
     alignItems: 'center',
-    zIndex: 50,     // Bleibt immer über dem RWR Grid
+    zIndex: 50,     
   },
   searchInput: {
     backgroundColor: 'rgba(0, 17, 0, 0.9)',
@@ -313,7 +319,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: '#39FF14',
-    borderRightWidth: 0, // Verbindet sich nahtlos mit dem Button
+    borderRightWidth: 0,
     textShadowColor: '#39FF14',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 5,
@@ -322,7 +328,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     borderWidth: 1,
     borderColor: '#005500',
-    borderRightWidth: 0, // An der rechten Kante offen
+    borderRightWidth: 0,
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
     paddingVertical: 10,
@@ -338,7 +344,7 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
     fontSize: 14,
     fontWeight: 'bold',
-    lineHeight: 16, // Hält die Buchstaben dicht beisammen
+    lineHeight: 16,
   },
   verticalCharActive: {
     color: '#39FF14',

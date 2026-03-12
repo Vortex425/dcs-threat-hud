@@ -1,8 +1,9 @@
-// CommsLink.tsx
+// CommsLink.tsx - Tactical Macro Interface and Network Transmitter
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, Modal } from 'react-native';
 
-// definiert, welche Daten die App.tsx uns übergeben muss
+// Defines the properties passed down from the parent component (App.tsx)
+// This enables "Lifting State Up" so the IP and link status persist when switching tabs
 interface Props {
   ipAddress: string;
   setIpAddress: (ip: string) => void;
@@ -12,10 +13,12 @@ interface Props {
 
 export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLinked }: Props) {
   
-  // Die IP und isLinked sind hier jetzt weg! Nur der Guide bleibt lokal.
+  // Local state to control the visibility of the installation guide modal
   const [showGuide, setShowGuide] = useState(false);
 
+  // Validates the entered IP address before attempting to establish a connection state
   const handleEnableLink = () => {
+    // Basic length check for an IPv4 address
     if (ipAddress.length < 9) {
       Alert.alert('UPLINK FAILED', 'Please enter a valid local IPv4 address.');
       return;
@@ -23,27 +26,30 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
     setIsLinked(true);
   };
 
+  // Handles the transmission of macro commands to the local DCS Lua server
   const handleMacroPress = async (macroName: string) => {
     console.log(`[UPLINK] Initiating transmission: ${macroName} to ${ipAddress}...`);
 
-    // 🔥 NEU: Der React-Native kompatible Timeout-Zünder
+    // Initialize an AbortController to manually timeout the fetch request
+    // This prevents the app from hanging if the PC is unreachable or DCS is not running
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000); // Bricht nach 2 Sekunden ab
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2-second timeout
 
     try {
+      // Send a simple HTTP GET request to the local DCS server
       const response = await fetch(`http://${ipAddress}:7777/${macroName}`, {
         method: 'GET',
-        signal: controller.signal // Verbindet den Fetch mit unserem Controller
+        signal: controller.signal // Bind the fetch request to our AbortController
       });
       
-      // Wenn die Anfrage erfolgreich war, Timer entschärfen
+      // Clear the timeout if the request resolves successfully before the 2-second mark
       clearTimeout(timeoutId);
 
       if (response.ok) {
         console.log(`[UPLINK] ${macroName} SUCCESSFUL.`);
       }
     } catch (error) {
-      // Auch bei einem Fehler müssen wir den Timer stoppen
+      // Ensure the timeout is cleared even if an error (like network failure or abort) occurs
       clearTimeout(timeoutId);
       console.error(`[UPLINK] FAILED:`, error);
       Alert.alert('TRANSMISSION FAILED', 'Could not reach DCS. Check IP and Export.lua.');
@@ -53,6 +59,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
   // ==========================================
   // STATE 0: SETUP & OPT-IN SCREEN
   // ==========================================
+  // Rendered when the user has not yet established a connection (isLinked === false)
   if (!isLinked) {
     return (
       <View style={styles.container}>
@@ -62,6 +69,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
             This module connects directly to your DCS client to automate Comms-Menu commands (F10).
           </Text>
           
+          {/* Triggers the installation guide modal */}
           <TouchableOpacity style={styles.guideBtn} onPress={() => setShowGuide(true)}>
             <Text style={styles.guideBtnText}>[ OPEN INSTALLATION GUIDE ]</Text>
           </TouchableOpacity>
@@ -83,6 +91,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
           </TouchableOpacity>
         </View>
 
+        {/* Installation Guide Modal - Provides step-by-step instructions for PC setup */}
         <Modal transparent={true} visible={showGuide} animationType="slide">
           <View style={styles.modalOverlay}>
             <View style={styles.guideModal}>
@@ -129,8 +138,10 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
   // ==========================================
   // STATE 1: ACTIVE TACTICAL MACROS
   // ==========================================
+  // Rendered when the uplink is established. Displays the grid of macro buttons.
   return (
     <View style={styles.container}>
+      {/* Header showing active connection and disconnect option */}
       <View style={styles.activeHeader}>
         <Text style={styles.activeStatus}>UPLINK ESTABLISHED: {ipAddress}</Text>
         <TouchableOpacity onPress={() => setIsLinked(false)}>
@@ -140,7 +151,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
 
       <ScrollView style={styles.macroScroll} contentContainerStyle={styles.macroGrid} showsVerticalScrollIndicator={false}>
         
-        {/* ================= MISSIONS ================= */}
+        {/* ================= MISSIONS COMMANDS ================= */}
         <View style={styles.macroCategory}>
           <Text style={styles.categoryTitle}>--- MISSION CONTROL ---</Text>
           <View style={styles.buttonRow}>
@@ -169,7 +180,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
           </View>
         </View>
 
-        {/* ================= LOGISTICS ================= */}
+        {/* ================= LOGISTICS & CARGO COMMANDS ================= */}
         <View style={styles.macroCategory}>
           <Text style={styles.categoryTitle}>--- LOGISTICS & CARGO ---</Text>
           <View style={styles.buttonRow}>
@@ -190,7 +201,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
           </View>
         </View>
 
-        {/* ================= CSAR ================= */}
+        {/* ================= CSAR & RESCUE COMMANDS ================= */}
         <View style={styles.macroCategory}>
           <Text style={styles.categoryTitle}>--- CSAR & RESCUE ---</Text>
           <View style={styles.buttonRow}>
