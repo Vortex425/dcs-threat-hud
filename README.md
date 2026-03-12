@@ -1,124 +1,136 @@
-
-
- # Disclaimer
- **This Project is made with the use of AI and a bit of my brain...**
-
+# Disclaimer
+**This Project is made with the use of AI and a bit of my brain...**
 
 ---
 
 # 🚀 DCS Tactical MFD & Comms Link
 
-Eine modulare, interaktive Kniebrett- und Companion-App für **DCS World**, gebaut mit React Native (Expo). 
-Diese App dient als taktisches Multifunktionsdisplay (MFD) auf deinem Android-Tablet oder Smartphone und bietet direkten, lokalen Zugriff auf Checklisten, Zielkoordinaten und eine automatisierte Steuerung des DCS-Funkmenüs (F10).
+A modular, interactive kneeboard and companion app for **DCS World**, built with React Native (Expo). 
+This app serves as a tactical Multifunction Display (MFD) on your Android tablet or smartphone, providing direct, local access to checklists, target coordinates, and automated control of the DCS radio menu (F10).
 
 ## ✨ Features
 
-* **[ RWR DATABASE ]:** Modul für Bedrohungsanalysen und Radarwarnempfänger-Daten.
-* **[ TARGET INDEX ]:** Ein robuster Dokumenten- und Bildbetrachter mit Zoom-Funktion für Missionskarten, Zielbilder und Checklisten.
-* **[ COMMS LINK ]:** Ein taktiles Hardware-Interface, das Befehle über das lokale WLAN an DCS sendet, um komplexe F10-Funkmenü-Befehle (z. B. CSAR, Logistik, Mission Control) vollautomatisch und in Sekundenbruchteilen im Spiel auszuführen.
+* **[ RWR DATABASE ]:** Module for threat analysis and Radar Warning Receiver (RWR) data.
+* **[ TARGET INDEX ]:** A robust document and image viewer with zoom functionality for mission maps, target images, and checklists.
+* **[ COMMS LINK ]:** A tactile hardware interface that sends commands over your local Wi-Fi to DCS, executing complex F10 radio menu sequences (e.g., CSAR, Logistics, Mission Control) fully automatically and in fractions of a second in-game.
 
 ---
 
-## 🛠️ Systemvoraussetzungen
+## 🛠️ System Requirements
 
-* **App:** Android-Gerät (Tablet/Smartphone) im selben WLAN wie der PC.
-* **PC:** DCS World, installiert auf einem Windows-PC.
-* **Entwicklung:** Node.js, Expo CLI, Android SDK (für manuelle Builds).
----
-
-## 🔗 Links & Ressourcen
-
-* **[Node.js herunterladen](https://nodejs.org/)**: Die Basis-Laufzeitumgebung. Wird benötigt, um `npm`-Befehle auszuführen.
-* **[Expo Installation & Setup](https://docs.expo.dev/get-started/installation/)**: Offizielle Dokumentation, wie man ein Expo-Projekt startet.
-* **[Expo Go App](https://expo.dev/client)**: Die Begleit-App für dein Smartphone, um den Code während der Entwicklung live zu testen.
-* **[Android Studio](https://developer.android.com/studio)**: Wird benötigt, um das Android SDK für den lokalen APK-Build (`gradlew assembleRelease`) einzurichten.
-* **[Notepad++](https://notepad-plus-plus.org/)** oder **[Visual Studio Code](https://code.visualstudio.com/)**: Empfohlene Code-Editoren, um die `DCS_Uplink.lua` oder die App-Dateien fehlerfrei zu bearbeiten.
----
-
-## 📱 App: Installation & Build
-
-### 1. Für die Entwicklung (Expo Go)
-Wenn du den Code bearbeiten und live auf dem Handy testen möchtest:
-```bash
-# Repository klonen und in den Ordner wechseln
-npm install
-npx expo start -c
-```
-Scanne den QR-Code mit der Expo Go App auf deinem Handy.
-
-### 2. Standalone APK bauen (Release Build)
-Da die App lokale, unverschlüsselte HTTP-Netzwerk-Befehle an den PC sendet (`Cleartext Traffic`), ist der native Android-Build-Prozess erforderlich. Die Erlaubnis dafür ist bereits in der `AndroidManifest.xml` und `app.json` hinterlegt.
-
-**Wichtige Info zur App-Signatur:**
-Android verlangt grundsätzlich, dass jede installierte APK signiert ist. 
-* **Quick & Dirty (Für dich & Freunde):** Wenn du den Build-Befehl einfach so ausführst, erstellt Android oft eine `app-release-unsigned.apk` oder signiert sie mit einem Standard-Debug-Schlüssel. Wenn du diese App installierst, wird **Google Play Protect** eine dicke, rote Warnung anzeigen ("App wurde nicht erkannt" oder "Unbekannter Entwickler"). Das ist völlig normal bei selbstgebauten Apps. Du kannst dort einfach auf *Weitere Details -> Trotzdem installieren* klicken.
-* **Der saubere Weg (Eigener Keystore):** Wenn du die rote Warnung umgehen oder die App "offiziell" signieren willst, musst du einen eigenen Keystore generieren und in der `android/app/build.gradle` hinterlegen. 
-  *(Terminal-Befehl zur Generierung: `keytool -genkey -v -keystore release.keystore -alias app-alias -keyalg RSA -keysize 2048 -validity 10000`)*
-
-**Der Build-Prozess:**
-Um die fertige `.apk` Datei zu generieren, öffne dein Terminal im Projektordner und führe diese Befehle aus:
-
-```bash
-cd android
-./gradlew clean
-./gradlew assembleRelease
-```
-Die fertige App findest du unter: `android/app/build/outputs/apk/release/app-release.apk`. Übertrage diese Datei auf dein Android-Gerät und installiere sie.
+* **App:** Android device (Tablet/Smartphone) connected to the same Wi-Fi network as the PC.
+* **PC:** DCS World, installed on a Windows PC.
+* **Development:** Node.js, Android Studio (for SDK), VSCode.
 
 ---
 
-## 💻 PC: Installation des DCS-Servers (Comms Link)
+## 🔗 Links & Resources
 
-Damit die App das Funkmenü im Spiel steuern kann, benötigt DCS ein kleines, lokales Empfänger-Skript. **Dieses Skript kommuniziert zu 100 % lokal (LAN) und sendet keine Daten an das Internet.**
+* **[Download Node.js](https://nodejs.org/)**: The base runtime environment. Required to execute `npm` commands.
+* **[Expo Installation & Setup](https://docs.expo.dev/get-started/installation/)**: Official documentation on how to start an Expo project.
+* **[Android Studio](https://developer.android.com/studio)**: Required to set up the Android SDK for the local APK build and development.
+* **[Visual Studio Code (VSCode)](https://code.visualstudio.com/)**: Highly recommended code editor for this project.
 
-### Schritt 1: Skript ablegen
-1. Lade die Datei `DCS_Uplink.lua` aus diesem Repository herunter.
-2. Verschiebe sie in deinen DCS-Skript-Ordner:
-   `C:\Benutzer\[DEIN_NAME]\Gespeicherte Spiele\DCS\Scripts\` *(Bei OpenBeta entsprechend in den `DCS.openbeta` Ordner)*.
+---
 
-### Schritt 2: Export.lua anpassen
-1. Öffne die Datei `Export.lua` im selben Ordner (erstelle sie, falls sie nicht existiert).
-2. Füge **ganz am Ende** der Datei folgende Zeile hinzu:
+## 🖥️ Setting up your Workspace (Windows & VSCode)
+
+To edit the code and compile local development builds on Windows (without using cloud-based EAS), you need to set up your environment carefully. 
+
+**Step 1: Install Core Prerequisites**
+1. Download and install **[Node.js](https://nodejs.org/)** (LTS version is recommended). This installs `npm`.
+2. Download and install **[Git](https://git-scm.com/)**.
+
+**Step 2: Android Studio & SDK Setup (Crucial for Local Builds)**
+
+To build the app locally, your PC needs the Android build tools.
+
+### *Refer to the [Expo Docs](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build&buildEnv=local)*
+---
+
+## 📱 App: Development & Building (Local, No EAS)
+
+### 1. Running a Local Development Build
+This compiles the app directly on your Windows machine and installs a dedicated development version on your connected device or emulator.
+
+### *Refer to the [Expo Docs](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build&buildEnv=local#running-your-app-on-an-android-device)*
+
+### 2. Building a Standalone Release APK
+When you are done coding and want to create the final `.apk` to distribute to your tablet or squadmates, you compile a release build.
+
+**Step 1: Compile the APK via Gradle**
+1. Open your VSCode terminal.
+2. Navigate into the native `android` directory:
+   ```bash
+   cd android
+   ```
+3. Clean the build environment to prevent caching issues:
+   ```bash
+   ./gradlew clean
+   ```
+4. Compile the release APK:
+   ```bash
+   ./gradlew assembleRelease
+   ```
+
+**Step 2: Locate and Install the APK**
+Once successful, find your compiled app in the file explorer at:
+`android/app/build/outputs/apk/release/app-release.apk`
+Transfer this `.apk` file to your Android device and install it.
+
+**⚠️ Important Info regarding App Signatures (Play Protect):**
+If you run the build commands above without setting up a custom Keystore, Android will sign the app with a generic debug key (or leave it unsigned). When installing this on your phone, **Google Play Protect** will throw a red warning ("Unrecognized app" or "Unknown developer"). 
+* This is completely normal for self-built apps! Simply tap **More details -> Install anyway**.
+* *(Advanced: If you wish to sign it properly to remove the warning, you must generate your own Keystore and link it in the `android/app/build.gradle` file).*
+
+---
+
+## 💻 PC: DCS Server Installation (Comms Link)
+
+For the app to be able to control the radio menu in-game, DCS needs a small, local receiver script. **This script communicates 100% locally (LAN) and does not send any data to the internet.**
+
+### Step 1: Place the script
+1. Download the `DCS_Uplink.lua` file from this repository.
+2. Move it to your DCS Scripts folder:
+   `C:\Users\[YOUR_NAME]\Saved Games\DCS\Scripts\` *(Use the `DCS.openbeta` folder if applicable)*.
+
+### Step 2: Edit Export.lua
+1. Open the `Export.lua` file in the same folder (create it if it doesn't exist).
+2. Add the following line **at the very bottom** of the file:
    ```lua
    dofile(lfs.writedir()..[[Scripts\DCS_Uplink.lua]])
    ```
-   *Hinweis: Wenn du DCS-BIOS, SRS oder Winwing-Skripte nutzt, achte darauf, dass dieses Skript wirklich als Letztes aufgerufen wird und keine leeren `LuaExportStart()`-Funktionen im Dokument existieren, die den Aufruf überschreiben könnten.*
+   *Note: If you are using DCS-BIOS, SRS, or Winwing scripts, make sure this script is truly called last and that there are no empty `LuaExportStart()` functions in the document that might overwrite the call.*
 
-### Schritt 3: IP herausfinden
-1. Drücke die Windows-Taste, tippe `cmd` und drücke Enter.
-2. Tippe `ipconfig` ein.
-3. Notiere dir deine **IPv4-Adresse** (z. B. `192.168.178.20`). Diese trägst du im Setup-Screen der App ein.
+### Step 3: Find your IP
+1. Press the Windows key, type `cmd`, and press Enter.
+2. Type `ipconfig`.
+3. Note your **IPv4 Address** (e.g., `192.168.178.20`). Enter this IP in the app's setup screen.
 
-**Wichtig für die Nutzung im Spiel:**
-* Das Skript ist nur aktiv, wenn du dich in einer **gestarteten, unpausierten Mission** (Vollbild / maximiert) befindest.
-* Im DCS-Hauptmenü passiert beim Drücken der App-Buttons nichts.
+**Important for in-game usage:**
+* The script is only active when you are in a **started, unpaused mission** (fullscreen / maximized).
+* Pressing the app buttons while in the DCS main menu will do nothing.
 
 ---
 
-## ⚙️ Customization: Wie du die App anpasst
+## ⚙️ New Macros
 
-### A. Target Index Bilder austauschen
-Die Bilder für das Kniebrett liegen lokal in der App.
-1. Navigiere zum Ordner `assets/targets/`.
-2. Lege deine JPG-Bilder dort ab (z. B. aus PDFs exportiert).
-3. Öffne die `TargetIndex.tsx` und passe das `pdfPages` Array oben in der Datei an, damit die Dateinamen und Endungen exakt übereinstimmen.
+### Create new Radio Macros (Comms Link)
+If you play on different multiplayer servers, you often need to press different F-keys. Customizing this takes two steps:
 
-### B. Neue Funk-Makros (Comms Link) erstellen
-Wenn du auf anderen Multiplayer-Servern spielst, musst du oft andere F-Tasten drücken. Dies anzupassen geht in zwei Schritten:
-
-**1. Einen neuen Button in der App anlegen (`CommsLink.tsx`)**
-Füge im Layout einen neuen `TouchableOpacity`-Block hinzu und gib dem Befehl einen eindeutigen Namen (z.B. `AWACS_BOGEY_DOPE`):
+**1. Create a new button in the App (`CommsLink.tsx`)**
+Add a new `TouchableOpacity` block in the layout and give the command a unique name (e.g., `AWACS_BOGEY_DOPE`):
 ```tsx
 <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('AWACS_BOGEY_DOPE')}>
   <Text style={styles.macroBtnText}>REQ: BOGEY DOPE</Text>
 </TouchableOpacity>
 ```
 
-**2. Die Tastenschläge im PC-Skript hinterlegen (`DCS_Uplink.lua`)**
-Öffne die Lua-Datei und suche die Funktion `Uplink.PushMacro`. Füge einen neuen `elseif`-Block mit deinem gewählten Namen hinzu. 
+**2. Assign the keystrokes in the PC Script (`DCS_Uplink.lua`)**
+Open the Lua file and find the `Uplink.PushMacro` function. Add a new `elseif` block with your chosen name. 
 
-DCS nutzt feste Engine-IDs für das Menü. Hier ist der Spickzettel aus der Engine:
-* **`179`** = Funkmenü öffnen (Immer als erstes aufrufen!)
+DCS uses fixed engine IDs for the menu. Here are the ones I used directly from the engine:
+* **`179`** = Open Radio Menu (Always call this first!)
 * **`966`** = F1
 * **`967`** = F2
 * **`968`** = F3
@@ -132,12 +144,17 @@ DCS nutzt feste Engine-IDs für das Menü. Hier ist der Spickzettel aus der Engi
 * **`976`** = F11
 * **`977`** = F12
 
-**Beispiel für den neuen AWACS-Befehl (F10 -> F5 -> F1):**
+*Note: To use other codes look into the `command_defs.lua` included in the sourcecode.*
+
+**Example for the new AWACS command (F10 -> F5 -> F1):**
 ```lua
 elseif macro == "AWACS_BOGEY_DOPE" then
-    -- # > F10 > F5 > F1
+    -- Sequence: Menu > F10 > F5 > F1
     local seq = {179, 975, 970, 966}
     for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 ```
 
-*Tipp: Sollte das DCS-Menü Tastendrücke verschlucken, weil es sich zu langsam aufbaut, erhöhe die Variable `Uplink.nextTime = t + 0.25` am Ende der Lua-Datei leicht (z.B. auf `0.3` oder `0.4`).*
+*Tip: If the DCS menu "swallows" keystrokes because it opens too slowly, slightly increase the variable `Uplink.nextTime = t + 0.25` at the bottom of the Lua file (e.g., to `0.3` or `0.4`).*
+
+---
+*Happy Flying & Check your Six!*
