@@ -141,40 +141,79 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.macroScroll} contentContainerStyle={styles.macroGrid}>
+      <ScrollView style={styles.macroScroll} contentContainerStyle={styles.macroGrid} showsVerticalScrollIndicator={false}>
+        
+        {/* ================= MISSIONS ================= */}
         <View style={styles.macroCategory}>
           <Text style={styles.categoryTitle}>--- MISSION CONTROL ---</Text>
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('MISSION_LIST')}>
               <Text style={styles.macroBtnText}>MISSION LIST</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('MISSION_ACTIVE')}>
-              <Text style={styles.macroBtnText}>ACTIVE MISSION</Text>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('MISSION_DIAL_CODE')}>
+              <Text style={styles.macroBtnText}>DIAL CODE</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('MISSION_CODE')}>
-              <Text style={styles.macroBtnText}>DIAL CODE</Text>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('MISSION_STRIKE')}>
+              <Text style={styles.macroBtnText}>REQ: STRIKE</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('MISSION_CAS')}>
+              <Text style={styles.macroBtnText}>REQ: CAS</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('MISSION_SEAD')}>
+              <Text style={styles.macroBtnText}>REQ: SEAD</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('RECON_MAIN')}>
+              <Text style={styles.macroBtnText}>RECON</Text>
             </TouchableOpacity>
           </View>
         </View>
 
+        {/* ================= LOGISTICS ================= */}
         <View style={styles.macroCategory}>
-          <Text style={styles.categoryTitle}>--- LOGISTICS ---</Text>
+          <Text style={styles.categoryTitle}>--- LOGISTICS & CARGO ---</Text>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('SUPPLIES_500')}>
-              <Text style={styles.macroBtnText}>SUPPLY 500</Text>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('LOGISTICS_CRATES')}>
+              <Text style={styles.macroBtnText}>CRATES MENU</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('SUPPLIES_1000')}>
-              <Text style={styles.macroBtnText}>SUPPLY 1000</Text>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('LOGISTICS_CRATE_2000')}>
+              <Text style={styles.macroBtnText}>SPAWN: 2000 CRATE</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('SUPPLIES_3000')}>
-              <Text style={styles.macroBtnText}>SUPPLY 3000</Text>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('LOGISTICS_UNPACK_ALL')}>
+              <Text style={styles.macroBtnText}>UNPACK ALL</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('LOGISTICS_INFANTRY')}>
+              <Text style={styles.macroBtnText}>LOAD INFANTRY</Text>
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* ================= CSAR ================= */}
+        <View style={styles.macroCategory}>
+          <Text style={styles.categoryTitle}>--- CSAR & RESCUE ---</Text>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('CSAR_MAIN')}>
+              <Text style={styles.macroBtnText}>CSAR MENU</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('CSAR_INFO')}>
+              <Text style={styles.macroBtnText}>REQ: INFO</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('CSAR_SMOKE')}>
+              <Text style={styles.macroBtnText}>REQ: SMOKE</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('CSAR_EXTRACT')}>
+              <Text style={styles.macroBtnText}>EXTRACT</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
       </ScrollView>
     </View>
   );

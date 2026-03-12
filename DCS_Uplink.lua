@@ -39,27 +39,78 @@ function Uplink.PushMacro(macro)
     -- MenuItem12 = 977,
     -- MenuExit = 978,
 
-    if macro == "MISSION_ACTIVE" then
-        table.insert(Uplink.queue, 179) -- 1. Menü auf (\)
-        table.insert(Uplink.queue, 970)
-        table.insert(Uplink.queue, 966)
-        table.insert(Uplink.queue, 967)
+    -- ================= LOGISTICS =================
+    if macro == "LOGISTICS_CRATES" then
+        -- # > F10 > F3 > F1 > F1
+        local seq = {179, 975, 968, 966, 966}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
         
+    elseif macro == "LOGISTICS_CRATE_2000" then
+        -- # > F10 > F3 > F1 > F1 > F3
+        local seq = {179, 975, 968, 966, 966, 968}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "LOGISTICS_UNPACK_ALL" then
+        -- # > F10 > F3 > F1 > F5
+        local seq = {179, 975, 968, 966, 970}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "LOGISTICS_INFANTRY" then
+        -- # > F10 > F3 > F2 > F1
+        local seq = {179, 975, 968, 967, 966}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    -- ================= CSAR =================
+    elseif macro == "CSAR_MAIN" then
+        -- # > F10 > F3 > F3
+        local seq = {179, 975, 968, 968}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "CSAR_INFO" then
+        -- # > F10 > F3 > F3 > F1
+        local seq = {179, 975, 968, 968, 966}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "CSAR_SMOKE" then
+        -- # > F10 > F3 > F3 > F2
+        local seq = {179, 975, 968, 968, 967}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "CSAR_EXTRACT" then
+        -- # > F10 > F3 > F3 > F4
+        local seq = {179, 975, 968, 968, 969}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    -- ================= MISSIONS =================
     elseif macro == "MISSION_LIST" then
-        table.insert(Uplink.queue, 179) 
-        table.insert(Uplink.queue, 80)  
-        table.insert(Uplink.queue, 72)  -- z.B. F2 für Mission List
-        
-    elseif macro == "MISSION_CODE" then
-        table.insert(Uplink.queue, 179) 
-        table.insert(Uplink.queue, 80)  
-        table.insert(Uplink.queue, 73)  -- z.B. F3 für Code Dial
-        
-    elseif macro == "SUPPLIES_500" then
-        table.insert(Uplink.queue, 179)
-        table.insert(Uplink.queue, 80)  
-        table.insert(Uplink.queue, 74)  -- z.B. F4 für Supplies
-        table.insert(Uplink.queue, 71)  -- z.B. F1 für 500
+        -- # > F10 > F2 > F1
+        local seq = {179, 975, 967, 966}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "MISSION_STRIKE" then
+        -- # > F10 > F2 > F1 > F8
+        local seq = {179, 975, 967, 966, 973}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "MISSION_CAS" then
+        -- # > F10 > F2 > F1 > F3
+        local seq = {179, 975, 967, 966, 968}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "MISSION_SEAD" then
+        -- # > F10 > F2 > F1 > F7
+        local seq = {179, 975, 967, 966, 972}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "MISSION_DIAL_CODE" then
+        -- # > F10 > F2 > F3
+        local seq = {179, 975, 967, 968}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
+    elseif macro == "RECON_MAIN" then
+        -- # > F10 > F7 > F1
+        local seq = {179, 975, 972, 966}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
     end
 end
 
@@ -67,35 +118,26 @@ function Uplink.Step()
     if Uplink.tcp then
         local client = Uplink.tcp:accept()
         if client then
-            -- 🔥 FIX 1: Wir geben dem WLAN 100ms Zeit, um den Text abzuliefern
             client:settimeout(0.1) 
             local request, err = client:receive()
-            
             if request then
                 local cmd = string.match(request, "GET /([%w_]+)")
-                if cmd then
-                    log.write("UPLINK", log.INFO, "Successfully received command from App: " .. cmd)
-                    Uplink.PushMacro(cmd)
-                end
-            else
-                log.write("UPLINK", log.INFO, "Connection accepted, but data empty or timeout: " .. tostring(err))
+                if cmd then Uplink.PushMacro(cmd) end
             end
-            
             client:send("HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nOK")
             client:close()
         end
     end
 
     local t = LoGetModelTime()
-    -- 🔥 FIX 2: Pause auf 0.4 Sekunden hochgesetzt. 
-    -- WICHTIG: LoGetModelTime() läuft nur, wenn das Spiel NICHT pausiert ist!
     if t and t > Uplink.nextTime and #Uplink.queue > 0 then
         local keyToPress = table.remove(Uplink.queue, 1)
-        log.write("UPLINK", log.INFO, "Pressing Key ID: " .. tostring(keyToPress))
         LoSetCommand(keyToPress)
-        Uplink.nextTime = t + 0.4 
+        
+        -- 🔥 Die Pause wurde auf 0.25 Sekunden verkürzt für schnellere Ausführung
+        Uplink.nextTime = t + 0.25 
     end
-end
+ends
 
 local PrevLuaExportStart = LuaExportStart
 LuaExportStart = function()
