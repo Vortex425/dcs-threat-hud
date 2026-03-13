@@ -76,6 +76,16 @@ function Uplink.PushMacro(macro)
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     -- ================= MISSIONS =================
+    elseif macro == "MISSION_ACTIVE" then
+        -- Sequence: Menu > F10 > F2 > F2
+        local seq = {978, 179, 975, 967, 967}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+    
+    elseif macro == "PLAYER_STATS" then
+        -- Sequence: Menu > F10 > F1 > F1
+        local seq = {978, 179, 975, 966, 966}
+        for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
+
     elseif macro == "MISSION_LIST" then
         -- Sequence: Menu > F10 > F2 > F1
         local seq = {978, 179, 975, 967, 966}

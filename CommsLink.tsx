@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLinked }: Props) {
-  
+
   // Local state to control the visibility of the installation guide modal
   const [showGuide, setShowGuide] = useState(false);
 
@@ -41,7 +41,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
         method: 'GET',
         signal: controller.signal // Bind the fetch request to our AbortController
       });
-      
+
       // Clear the timeout if the request resolves successfully before the 2-second mark
       clearTimeout(timeoutId);
 
@@ -69,7 +69,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
           <Text style={styles.instructionText}>
             This module connects directly to your DCS client to automate Comms-Menu commands (F10).
           </Text>
-          
+
           {/* Triggers the installation guide modal */}
           <TouchableOpacity style={styles.guideBtn} onPress={() => setShowGuide(true)}>
             <Text style={styles.guideBtnText}>[ OPEN INSTALLATION GUIDE ]</Text>
@@ -77,7 +77,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
 
           <View style={styles.inputRow}>
             <Text style={styles.inputLabel}>TARGET IP:</Text>
-            <TextInput 
+            <TextInput
               style={styles.ipInput}
               value={ipAddress}
               onChangeText={setIpAddress}
@@ -97,7 +97,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
           <View style={styles.modalOverlay}>
             <View style={styles.guideModal}>
               <Text style={styles.warningTitle}>[ LUA SCRIPT SETUP ]</Text>
-              
+
               <ScrollView style={styles.guideScroll}>
                 <Text style={styles.guideStepTitle}>STEP 1: GET SCRIPT</Text>
                 <Text style={styles.guideText}>On your DCS PC, open a browser and go to:</Text>
@@ -109,12 +109,12 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
                 <Text style={styles.guideStepTitle}>STEP 2: INSTALL SCRIPT</Text>
                 <Text style={styles.guideText}>
                   Move the downloaded file into your DCS Scripts folder:{'\n'}
-                  <Text style={{color: '#FFA500'}}>C:\Users\YOUR_NAME\Saved Games\DCS\Scripts\</Text>
+                  <Text style={{ color: '#FFA500' }}>C:\Users\YOUR_NAME\Saved Games\DCS\Scripts\</Text>
                 </Text>
 
                 <Text style={styles.guideStepTitle}>STEP 3: EDIT EXPORT.LUA</Text>
                 <Text style={styles.guideText}>
-                  Open the <Text style={{fontWeight: 'bold'}}>Export.lua</Text> file in the same folder (create it if it doesn't exist) and add this exact line at the very bottom:
+                  Open the <Text style={{ fontWeight: 'bold' }}>Export.lua</Text> file in the same folder (create it if it doesn't exist) and add this exact line at the very bottom:
                 </Text>
                 <View style={styles.codeBlock}>
                   <Text style={styles.codeText}>dofile(lfs.writedir()..[[Scripts\DCS_Uplink.lua]])</Text>
@@ -122,7 +122,7 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
 
                 <Text style={styles.guideStepTitle}>STEP 4: FIND YOUR IP</Text>
                 <Text style={styles.guideText}>
-                  Open Windows CMD, type <Text style={{color: '#FFA500'}}>ipconfig</Text>, and find your IPv4 Address. Enter it in the App's Setup Screen.
+                  Open Windows CMD, type <Text style={{ color: '#FFA500' }}>ipconfig</Text>, and find your IPv4 Address. Enter it in the App's Setup Screen.
                 </Text>
               </ScrollView>
 
@@ -151,10 +151,18 @@ export default function CommsLink({ ipAddress, setIpAddress, isLinked, setIsLink
       </View>
 
       <ScrollView style={styles.macroScroll} contentContainerStyle={styles.macroGrid} showsVerticalScrollIndicator={false}>
-        
+
         {/* ================= MISSIONS COMMANDS ================= */}
         <View style={styles.macroCategory}>
           <Text style={styles.categoryTitle}>--- MISSION CONTROL ---</Text>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('MISSION_ACTIVE')}>
+              <Text style={styles.macroBtnText}>ACTIVE MISSION</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('PLAYER_STATS')}>
+              <Text style={styles.macroBtnText}>PLAYER STATS</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.macroBtn} onPress={() => handleMacroPress('MISSION_LIST')}>
               <Text style={styles.macroBtnText}>MISSION LIST</Text>
