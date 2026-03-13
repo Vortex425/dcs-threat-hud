@@ -24,7 +24,7 @@ end
 
 -- Translates incoming macro strings into a sequence of DCS engine command IDs
 function Uplink.PushMacro(macro)
-    log.write("UPLINK", log.INFO, "Translating Macro to Keystrokes: " .. macro)
+    log.write("UPLINK", log.INFO, "Translating Macro to Keystrokes") --Keystrokes: " .. macro)
     
     -- Official Engine Command IDs for the Communications Menu:
     -- 179 = Main Radio Menu (\)
@@ -36,74 +36,74 @@ function Uplink.PushMacro(macro)
     -- ================= LOGISTICS =================
     if macro == "LOGISTICS_CRATES" then
         -- Sequence: Menu > F10 > F3 > F1 > F1
-        local seq = {179, 975, 968, 966, 966}
+        local seq = {978, 179, 975, 968, 966, 966}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
         
     elseif macro == "LOGISTICS_CRATE_2000" then
         -- Sequence: Menu > F10 > F3 > F1 > F1 > F3
-        local seq = {179, 975, 968, 966, 966, 968}
+        local seq = {978, 179, 975, 968, 966, 966, 968}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "LOGISTICS_UNPACK_ALL" then
         -- Sequence: Menu > F10 > F3 > F1 > F5
-        local seq = {179, 975, 968, 966, 970}
+        local seq = {978, 179, 975, 968, 966, 970}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "LOGISTICS_INFANTRY" then
         -- Sequence: Menu > F10 > F3 > F2 > F1
-        local seq = {179, 975, 968, 967, 966}
+        local seq = {978, 179, 975, 968, 967, 966}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     -- ================= CSAR =================
     elseif macro == "CSAR_MAIN" then
         -- Sequence: Menu > F10 > F3 > F3
-        local seq = {179, 975, 968, 968}
+        local seq = {978, 179, 975, 968, 968}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "CSAR_INFO" then
         -- Sequence: Menu > F10 > F3 > F3 > F1
-        local seq = {179, 975, 968, 968, 966}
+        local seq = {978, 179, 975, 968, 968, 966}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "CSAR_SMOKE" then
         -- Sequence: Menu > F10 > F3 > F3 > F2
-        local seq = {179, 975, 968, 968, 967}
+        local seq = {978, 179, 975, 968, 968, 967}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "CSAR_EXTRACT" then
         -- Sequence: Menu > F10 > F3 > F3 > F4
-        local seq = {179, 975, 968, 968, 969}
+        local seq = {978, 179, 975, 968, 968, 969}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     -- ================= MISSIONS =================
     elseif macro == "MISSION_LIST" then
         -- Sequence: Menu > F10 > F2 > F1
-        local seq = {179, 975, 967, 966}
+        local seq = {978, 179, 975, 967, 966}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "MISSION_STRIKE" then
         -- Sequence: Menu > F10 > F2 > F1 > F8
-        local seq = {179, 975, 967, 966, 973}
+        local seq = {978, 179, 975, 967, 966, 973}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "MISSION_CAS" then
         -- Sequence: Menu > F10 > F2 > F1 > F3
-        local seq = {179, 975, 967, 966, 968}
+        local seq = {978, 179, 975, 967, 966, 968}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "MISSION_SEAD" then
         -- Sequence: Menu > F10 > F2 > F1 > F7
-        local seq = {179, 975, 967, 966, 972}
+        local seq = {978, 179, 975, 967, 966, 972}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "MISSION_DIAL_CODE" then
         -- Sequence: Menu > F10 > F2 > F3
-        local seq = {179, 975, 967, 968}
+        local seq = {978, 179, 975, 967, 968}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
 
     elseif macro == "RECON_MAIN" then
         -- Sequence: Menu > F10 > F7 > F1
-        local seq = {179, 975, 972, 966}
+        local seq = {978, 179, 975, 972, 966}
         for _, v in ipairs(seq) do table.insert(Uplink.queue, v) end
     end
 end
